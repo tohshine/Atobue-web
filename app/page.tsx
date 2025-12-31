@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 type Feature = {
   title: string;
@@ -16,69 +16,106 @@ type FaqItem = {
 
 function LogoMark() {
   return (
-    <div className="flex items-center gap-3">
-      <div className="grid h-10 w-10 place-items-center rounded-lg bg-white/10 ring-1 ring-white/10">
-        <span className="text-sm font-semibold text-white/90">A</span>
-      </div>
-      <div className="leading-tight">
-        <div className="text-sm font-semibold tracking-wide">ATOBUE</div>
-        <div className="text-[11px] text-white/60">Atobue website</div>
-      </div>
+    <div className="flex items-center">
+      <Image
+        src="/decor/Logo.png"
+        alt="Atobue Logo"
+        width={120}
+        height={40}
+        className="h-auto w-auto"
+      />
     </div>
   );
 }
 
-function StoreButtons() {
+function StoreButtons({ className = "" }: { className?: string }) {
+  const [device, setDevice] = useState<"ios" | "android" | "other">("other");
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    
+    if (/android/i.test(userAgent)) {
+      setDevice("android");
+    } else if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
+      setDevice("ios");
+    } else {
+      setDevice("other");
+    }
+  }, []);
+
+  const showIOS = device === "ios" || device === "other";
+  const showAndroid = device === "android" || device === "other";
+
   return (
-    <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-      <a className="btn-store" href="#" aria-label="Download on the App Store">
-        <span className="text-lg"></span>
-        <span className="leading-tight">
-          <span className="block text-[10px] text-white/60">DOWNLOAD ON</span>
-          <span className="block font-medium">App Store</span>
-        </span>
-      </a>
+    <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+      {showIOS && (
+        <a href="#" aria-label="Download on the App Store" className="inline-block">
+          <Image
+            src="/decor/apple.png"
+            alt="Download on the App Store"
+            width={150}
+            height={50}
+            className="h-[50px] w-auto"
+          />
+        </a>
+      )}
 
-      <a className="btn-store" href="#" aria-label="Get it on Google Play">
-        <span className="text-lg">▶</span>
-        <span className="leading-tight">
-          <span className="block text-[10px] text-white/60">DOWNLOAD ON</span>
-          <span className="block font-medium">Google Play</span>
-        </span>
-      </a>
+      {showAndroid && (
+        <a href="#" aria-label="Get it on Google Play" className="inline-block">
+          <Image
+            src="/decor/google.png"
+            alt="Get it on Google Play"
+            width={150}
+            height={50}
+            className="h-[50px] w-auto"
+          />
+        </a>
+      )}
     </div>
   );
 }
 
-function PhoneStack({ side = "left" }: { side?: "left" | "right" }) {
+function PhoneStack({ 
+  side = "left",
+  backImage = "/decor/Explore.png",
+  frontImage = "/decor/properties.png"
+}: { 
+  side?: "left" | "right";
+  backImage?: string;
+  frontImage?: string;
+}) {
   const isLeft = side === "left";
   return (
-    <div className="relative h-[260px] w-full max-w-[320px] mx-auto md:mx-0">
+    <div className="relative h-[340px] w-full max-w-[200px] mx-auto md:mx-0">
       <div
         className={[
-          "absolute top-10 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft",
-          isLeft ? "left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0" : "left-1/2 -translate-x-1/2 md:right-0 md:translate-x-0",
+          "absolute top-10 h-[280px] w-[140px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft",
+          isLeft 
+            ? "left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0" 
+            : "left-1/2 -translate-x-1/2 md:left-auto md:right-0 md:translate-x-0",
         ].join(" ")}
       >
         <Image
-          src="/decor/Explore.png"
+          src={backImage}
           alt="Phone mockup"
-          width={160}
-          height={220}
+          width={140}
+          height={280}
           className="h-full w-full object-cover"
         />
       </div>
       <div
         className={[
-          "absolute top-0 h-[240px] w-[180px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft",
-          isLeft ? "left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0" : "left-1/2 -translate-x-1/2 md:right-12 md:translate-x-0",
+          "absolute top-0 h-[300px] w-[150px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft",
+          isLeft 
+            ? "left-1/2 -translate-x-1/2 md:left-10 md:translate-x-0" 
+            : "left-1/2 -translate-x-1/2 md:right-10 md:translate-x-0",
         ].join(" ")}
       >
         <Image
-          src="/decor/properties.png"
+          src={frontImage}
           alt="Phone mockup"
-          width={180}
-          height={240}
+          width={150}
+          height={300}
           className="h-full w-full object-cover"
         />
       </div>
@@ -98,6 +135,21 @@ function BulletHeading({ text }: { text: string }) {
 
 function FeatureRow({ item }: { item: Feature }) {
   const isLeft = item.align === "left";
+  
+  // Determine images based on feature title
+  const getImages = (title: string) => {
+    if (title.toLowerCase().includes("property") || title.toLowerCase().includes("manage")) {
+      return { back: "/decor/landlrd.png", front: "/decor/properties.png" };
+    } else if (title.toLowerCase().includes("place") || title.toLowerCase().includes("rent")) {
+      return { back: "/decor/Explore.png", front: "/decor/Rent.png" };
+    } else if (title.toLowerCase().includes("caretaker") || title.toLowerCase().includes("earn")) {
+      return { back: "/decor/properties.png", front: "/decor/caretaker.png" };
+    }
+    return { back: "/decor/Explore.png", front: "/decor/properties.png" };
+  };
+  
+  const images = getImages(item.title);
+  
   return (
     <section className="mt-10 md:mt-14">
       <div className="container-page">
@@ -108,7 +160,11 @@ function FeatureRow({ item }: { item: Feature }) {
           ].join(" ")}
         >
           <div className={isLeft ? "order-1" : "order-1 md:order-2"}>
-            <PhoneStack side={isLeft ? "left" : "right"} />
+            <PhoneStack 
+              side={isLeft ? "left" : "right"} 
+              backImage={images.back}
+              frontImage={images.front}
+            />
           </div>
 
           <div className={isLeft ? "order-2" : "order-2 md:order-1"}>
@@ -116,21 +172,8 @@ function FeatureRow({ item }: { item: Feature }) {
             <p className="mt-3 text-sm leading-6 text-white/70 md:text-[15px]">
               {item.body}
             </p>
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <a className="btn-store" href="#">
-                <span className="text-lg"></span>
-                <span className="leading-tight">
-                  <span className="block text-[10px] text-white/60">DOWNLOAD ON</span>
-                  <span className="block font-medium">App Store</span>
-                </span>
-              </a>
-              <a className="btn-store" href="#">
-                <span className="text-lg">▶</span>
-                <span className="leading-tight">
-                  <span className="block text-[10px] text-white/60">DOWNLOAD ON</span>
-                  <span className="block font-medium">Google Play</span>
-                </span>
-              </a>
+            <div className="mt-4">
+              <StoreButtons />
             </div>
           </div>
         </div>
@@ -149,7 +192,7 @@ function DropletPanel() {
           Digitize your property, find verified rentals fast, or become a caretaker and start earning in our
           all in one powerful app.
         </p>
-        <StoreButtons />
+        <StoreButtons className="mt-4 justify-center" />
       </div>
     </div>
   );
@@ -277,19 +320,43 @@ export default function Page() {
             <a href="#faq" className="hover:text-white">Faq</a>
           </nav>
 
-          <div className="flex items-center gap-3 text-white/70">
-            <button className="grid h-9 w-9 place-items-center rounded-lg bg-white/5 ring-1 ring-white/10 hover:bg-white/10">
-              ✕
-            </button>
-            <button className="grid h-9 w-9 place-items-center rounded-lg bg-white/5 ring-1 ring-white/10 hover:bg-white/10">
-              ⌂
-            </button>
-            <button className="grid h-9 w-9 place-items-center rounded-lg bg-white/5 ring-1 ring-white/10 hover:bg-white/10">
-              ⟳
-            </button>
-            <button className="grid h-9 w-9 place-items-center rounded-lg bg-white/5 ring-1 ring-white/10 hover:bg-white/10">
-              ⧉
-            </button>
+          <div className="flex items-center gap-3">
+            <a href="#" aria-label="X" className="opacity-70 hover:opacity-100 transition-opacity">
+              <Image
+                src="/decor/x.png"
+                alt="X"
+                width={24}
+                height={24}
+                className="h-6 w-6"
+              />
+            </a>
+            <a href="#" aria-label="Instagram" className="opacity-70 hover:opacity-100 transition-opacity">
+              <Image
+                src="/decor/instagram.png"
+                alt="Instagram"
+                width={24}
+                height={24}
+                className="h-6 w-6"
+              />
+            </a>
+            <a href="#" aria-label="TikTok" className="opacity-70 hover:opacity-100 transition-opacity">
+              <Image
+                src="/decor/tiktok.png"
+                alt="TikTok"
+                width={24}
+                height={24}
+                className="h-6 w-6"
+              />
+            </a>
+            <a href="#" aria-label="YouTube" className="opacity-70 hover:opacity-100 transition-opacity">
+              <Image
+                src="/decor/youtube.png"
+                alt="YouTube"
+                width={24}
+                height={24}
+                className="h-6 w-6"
+              />
+            </a>
           </div>
         </div>
       </header>
@@ -350,31 +417,40 @@ export default function Page() {
 
           <div className="mt-10 grid items-center gap-8 md:grid-cols-2 md:gap-12">
             <div className="flex justify-center md:justify-start">
-              <div className="relative h-[280px] w-full max-w-[520px]">
-                <div className="absolute left-0 top-8 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+              <div className="relative h-[320px] w-full max-w-[520px]">
+                <div className="absolute left-0 top-8 h-[280px] w-[140px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
                   <Image
                     src="/decor/Rent.png"
                     alt="Phone mockup"
-                    width={160}
-                    height={220}
+                    width={140}
+                    height={280}
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute left-24 top-4 h-[240px] w-[180px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                <div className="absolute left-20 top-4 h-[300px] w-[150px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
                   <Image
                     src="/decor/manage.png"
                     alt="Phone mockup"
-                    width={180}
-                    height={240}
+                    width={150}
+                    height={300}
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute left-52 top-8 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                <div className="absolute left-40 top-8 h-[280px] w-[140px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
                   <Image
                     src="/decor/caretaker.png"
                     alt="Phone mockup"
-                    width={160}
-                    height={220}
+                    width={140}
+                    height={280}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="absolute left-60 top-6 h-[290px] w-[145px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                  <Image
+                    src="/decor/properties.png"
+                    alt="Phone mockup"
+                    width={145}
+                    height={290}
                     className="h-full w-full object-cover"
                   />
                 </div>
@@ -392,21 +468,8 @@ export default function Page() {
                 complaints and repairs. Renters can find rooms, houses, apartments, or land. Caretakers can earn
                 monthly by helping owners with checks and issue follow-ups.
               </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <a className="btn-store" href="#">
-                  <span className="text-lg"></span>
-                  <span className="leading-tight">
-                    <span className="block text-[10px] text-white/60">DOWNLOAD ON</span>
-                    <span className="block font-medium">App Store</span>
-                  </span>
-                </a>
-                <a className="btn-store" href="#">
-                  <span className="text-lg">▶</span>
-                  <span className="leading-tight">
-                    <span className="block text-[10px] text-white/60">DOWNLOAD ON</span>
-                    <span className="block font-medium">Google Play</span>
-                  </span>
-                </a>
+              <div className="mt-5">
+                <StoreButtons />
               </div>
             </div>
           </div>
@@ -427,21 +490,8 @@ export default function Page() {
             What are you waiting for? Download Now!
           </h3>
 
-          <div className="mt-4 flex justify-center gap-3">
-            <a className="btn-store" href="#">
-              <span className="text-lg"></span>
-              <span className="leading-tight">
-                <span className="block text-[10px] text-white/60">DOWNLOAD ON</span>
-                <span className="block font-medium">App Store</span>
-              </span>
-            </a>
-            <a className="btn-store" href="#">
-              <span className="text-lg">▶</span>
-              <span className="leading-tight">
-                <span className="block text-[10px] text-white/60">DOWNLOAD ON</span>
-                <span className="block font-medium">Google Play</span>
-              </span>
-            </a>
+          <div className="mt-4">
+            <StoreButtons className="justify-center" />
           </div>
 
           <div className="mt-10 flex flex-col items-center justify-between gap-6 md:flex-row">
