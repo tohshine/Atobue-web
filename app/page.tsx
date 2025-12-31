@@ -56,16 +56,32 @@ function PhoneStack({ side = "left" }: { side?: "left" | "right" }) {
     <div className="relative h-[260px] w-full max-w-[320px]">
       <div
         className={[
-          "absolute top-10 h-[220px] w-[160px] rounded-2xl bg-white/10 ring-1 ring-white/10 shadow-soft",
+          "absolute top-10 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft",
           isLeft ? "left-0" : "right-0",
         ].join(" ")}
-      />
+      >
+        <Image
+          src="/decor/Explore.png"
+          alt="Phone mockup"
+          width={160}
+          height={220}
+          className="h-full w-full object-cover"
+        />
+      </div>
       <div
         className={[
-          "absolute top-0 h-[240px] w-[180px] rounded-2xl bg-white/15 ring-1 ring-white/10 shadow-soft",
+          "absolute top-0 h-[240px] w-[180px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft",
           isLeft ? "left-12" : "right-12",
         ].join(" ")}
-      />
+      >
+        <Image
+          src="/decor/properties.png"
+          alt="Phone mockup"
+          width={180}
+          height={240}
+          className="h-full w-full object-cover"
+        />
+      </div>
       <div className="absolute inset-0 rounded-2xl opacity-40 blur-2xl bg-(--brand)/10" />
     </div>
   );
@@ -279,9 +295,23 @@ export default function Page() {
       </header>
 
       {/* Hero */}
-      <section className="pt-10 md:pt-14">
+      <section className="relative pt-10 md:pt-14 pb-10 md:pb-14 overflow-hidden">
+        {/* Transparent faded background image */}
+        <div className="absolute inset-0 -z-20 flex items-center justify-center">
+          <Image
+            src="/decor/atobue-mark.png"
+            alt=""
+            width={800}
+            height={800}
+            className="w-full max-w-[600px] md:max-w-[800px] h-auto object-contain opacity-20 md:opacity-30 scale-75 md:scale-100"
+            priority
+            aria-hidden="true"
+          />
+        </div>
+        {/* Black overlay */}
+        <div className="absolute inset-0 -z-10 bg-black/40 md:bg-black/30" aria-hidden="true" />
         
-        <div className="container-page">
+        <div className="container-page relative z-10">
           
           <div className="relative mx-auto max-w-[760px] text-center">
 
@@ -321,9 +351,35 @@ export default function Page() {
           <div className="mt-10 grid items-center gap-8 md:grid-cols-2 md:gap-12">
             <div className="flex justify-center md:justify-start">
               <div className="relative h-[280px] w-full max-w-[520px]">
-                <div className="absolute left-0 top-8 h-[220px] w-[160px] rounded-2xl bg-white/10 ring-1 ring-white/10 shadow-soft" />
-                <div className="absolute left-24 top-4 h-[240px] w-[180px] rounded-2xl bg-white/15 ring-1 ring-white/10 shadow-soft" />
-                <div className="absolute left-52 top-8 h-[220px] w-[160px] rounded-2xl bg-white/10 ring-1 ring-white/10 shadow-soft" />
+                <div className="absolute left-0 top-8 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                  <Image
+                    src="/decor/Rent.png"
+                    alt="Phone mockup"
+                    width={160}
+                    height={220}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="absolute left-24 top-4 h-[240px] w-[180px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                  <Image
+                    src="/decor/manage.png"
+                    alt="Phone mockup"
+                    width={180}
+                    height={240}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="absolute left-52 top-8 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                  <Image
+                    src="/decor/caretaker.png"
+                    alt="Phone mockup"
+                    width={160}
+                    height={220}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+
+                
                 <div className="absolute inset-0 -z-10 rounded-[40px] bg-[radial-gradient(120%_120%_at_50%_0%,rgba(45,179,255,0.20),rgba(0,0,0,0)_65%)]" />
               </div>
             </div>
