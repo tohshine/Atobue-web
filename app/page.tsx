@@ -351,7 +351,7 @@ export default function Page() {
           <div className="mt-10 grid items-center gap-8 md:grid-cols-2 md:gap-12">
             <div className="flex justify-center md:justify-start">
               <div className="relative h-[280px] w-full max-w-[520px]">
-                <div className="absolute left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0 top-8 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                <div className="absolute left-0 top-8 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
                   <Image
                     src="/decor/Rent.png"
                     alt="Phone mockup"
@@ -360,7 +360,7 @@ export default function Page() {
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute left-1/2 -translate-x-1/2 md:left-24 md:translate-x-0 top-4 h-[240px] w-[180px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                <div className="absolute left-24 top-4 h-[240px] w-[180px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
                   <Image
                     src="/decor/manage.png"
                     alt="Phone mockup"
@@ -369,7 +369,7 @@ export default function Page() {
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute left-1/2 -translate-x-1/2 md:left-52 md:translate-x-0 top-8 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                <div className="absolute left-52 top-8 h-[220px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
                   <Image
                     src="/decor/caretaker.png"
                     alt="Phone mockup"
