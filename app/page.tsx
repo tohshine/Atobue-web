@@ -89,10 +89,10 @@ function PhoneStack({
     <div className="relative h-[340px] w-full max-w-[200px] mx-auto md:mx-0">
       <div
         className={[
-          "absolute top-10 h-[280px] w-[140px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft",
+          "absolute top-10 h-[280px] w-[140px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft z-10",
           isLeft 
-            ? "left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0" 
-            : "left-1/2 -translate-x-1/2 md:left-auto md:right-0 md:translate-x-0",
+            ? "left-[calc(50%-80px)] md:left-0" 
+            : "left-[calc(50%-60px)] md:left-auto md:right-0",
         ].join(" ")}
       >
         <Image
@@ -105,7 +105,7 @@ function PhoneStack({
       </div>
       <div
         className={[
-          "absolute top-0 h-[300px] w-[150px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft",
+          "absolute top-0 h-[300px] w-[150px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft z-20",
           isLeft 
             ? "left-1/2 -translate-x-1/2 md:left-10 md:translate-x-0" 
             : "left-1/2 -translate-x-1/2 md:right-10 md:translate-x-0",
@@ -119,7 +119,7 @@ function PhoneStack({
           className="h-full w-full object-cover"
         />
       </div>
-      <div className="absolute inset-0 rounded-2xl opacity-40 blur-2xl bg-(--brand)/10" />
+      <div className="absolute inset-0 rounded-2xl opacity-40 blur-2xl bg-(--brand)/10 z-0" />
     </div>
   );
 }
