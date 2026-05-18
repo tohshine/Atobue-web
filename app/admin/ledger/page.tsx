@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
@@ -22,7 +22,7 @@ function statusPill(status: string) {
   return `${common} bg-amber-400/15 text-amber-200`;
 }
 
-export default function AdminLedgerPage() {
+function AdminLedgerPageInner() {
   const searchParams = useSearchParams();
   const [ledgerEntries, setEntries] = useState<LedgerEntry[]>([]);
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -334,5 +334,21 @@ export default function AdminLedgerPage() {
         </div>
       </AdminShell>
     </AdminGuard>
+  );
+}
+
+export default function AdminLedgerPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="grid min-h-screen place-items-center bg-[linear-gradient(170deg,#040a14_0%,#0c1830_45%,#091328_100%)]">
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white/70">
+            Loading ledger...
+          </div>
+        </main>
+      }
+    >
+      <AdminLedgerPageInner />
+    </Suspense>
   );
 }

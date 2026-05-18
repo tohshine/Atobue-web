@@ -28,7 +28,7 @@ export default function AdminShell({
       <header className="sticky top-0 z-40 border-b border-white/10 bg-black/45 backdrop-blur-xl">
         <div className="container-page flex flex-wrap items-center justify-between gap-3 py-4">
           <div>
-            <p className="text-xs uppercase tracking-wide text-white/60">Atobue Admin</p>
+            <p className="text-xs uppercase tracking-wide text-white/60">Xelfon Admin</p>
             <h1 className="text-xl font-semibold md:text-2xl">{title}</h1>
             <p className="text-xs text-white/60">{subtitle}</p>
           </div>

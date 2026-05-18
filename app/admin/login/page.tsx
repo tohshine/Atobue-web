@@ -30,7 +30,7 @@ export default function AdminLoginPage() {
       <section className="container-page relative z-10 flex min-h-screen items-center py-10">
         <div className="grid w-full gap-8 md:grid-cols-[1fr_1.1fr]">
           <aside className="rounded-3xl border border-white/10 bg-white/5 p-7 shadow-soft backdrop-blur md:p-9">
-            <p className="pill bg-white/8 text-white/90">Atobue Admin Suite</p>
+            <p className="pill bg-white/8 text-white/90">Xelfon Admin Suite</p>
             <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-4xl">
               Elegant control center for finance and operations
             </h1>
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  placeholder="admin@atobue.com"
+                  placeholder="admin@xelfon.com"
                   className="mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-(--brand)"
                 />
               </label>
