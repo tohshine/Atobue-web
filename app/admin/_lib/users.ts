@@ -1,3 +1,5 @@
+export type UserVerificationStatus = "pending" | "approved" | "denied";
+
 export type AdminUser = {
   id: string;
   fullName: string;
@@ -7,6 +9,10 @@ export type AdminUser = {
   joinedAt: string;
   lastSeen: string;
   totalTransactions: number;
+  documentType: "national-id" | "passport" | "drivers-license";
+  documentUrl: string;
+  documentUploadedAt: string;
+  verificationStatus: UserVerificationStatus;
 };
 
 type UsersResponse = {
@@ -25,4 +31,20 @@ export async function getUsers() {
   }
 
   return (await response.json()) as UsersResponse;
+}
+
+export async function updateUserVerification(userId: string, status: UserVerificationStatus) {
+  const response = await fetch(`/api/users/${userId}/verification`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Unable to update verification status");
+  }
+
+  return (await response.json()) as { user: AdminUser };
 }
