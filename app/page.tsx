@@ -314,11 +314,14 @@ export default function Page() {
   );
 
   return (
-    <main className="min-h-screen">
+    <main className="relative isolate min-h-screen overflow-x-hidden">
       {/* Background */}
-      <div className="fixed inset-0 -z-20 bg-[linear-gradient(180deg,#0b1016_0%,#101722_48%,#090d13_100%)]" />
-      <div className="fixed inset-0 -z-10 opacity-90 bg-[radial-gradient(860px_440px_at_50%_10%,rgba(45,179,255,0.25),rgba(0,0,0,0))]" />
-      <div className="fixed inset-0 -z-10 opacity-60 bg-[radial-gradient(720px_360px_at_85%_40%,rgba(31,74,145,0.18),rgba(0,0,0,0))]" />
+      <div className="fixed inset-0 -z-30 bg-[linear-gradient(160deg,#071120_0%,#0d1c33_35%,#102548_58%,#0a1222_100%)]" />
+      <div className="fixed inset-0 -z-20 bg-[radial-gradient(1100px_540px_at_50%_-8%,rgba(77,173,255,0.35),rgba(14,23,40,0.05)_45%,rgba(0,0,0,0)_70%)]" />
+      <div className="fixed inset-0 -z-20 bg-[radial-gradient(760px_460px_at_10%_75%,rgba(106,69,255,0.22),rgba(0,0,0,0)_72%)]" />
+      <div className="fixed inset-0 -z-20 bg-[radial-gradient(700px_420px_at_90%_30%,rgba(41,222,255,0.18),rgba(0,0,0,0)_70%)]" />
+      <div className="fixed inset-0 -z-10 opacity-45 blur-2xl bg-[conic-gradient(from_210deg_at_50%_45%,rgba(255,255,255,0.08),rgba(255,255,255,0)_25%,rgba(96,165,250,0.12)_55%,rgba(255,255,255,0)_78%,rgba(255,255,255,0.08))]" />
+      <div className="fixed inset-0 -z-10 bg-[radial-gradient(120%_80%_at_50%_120%,rgba(2,8,18,0.85),rgba(2,8,18,0)_45%)]" />
 
       {/* Top nav */}
       <header className="sticky top-0 z-30 border-b border-white/10 bg-black/35 backdrop-blur-xl">
