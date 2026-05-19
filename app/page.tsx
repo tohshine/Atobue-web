@@ -60,7 +60,7 @@ function StoreButtons({ className = "" }: { className?: string }) {
             alt="Download on the App Store"
             width={150}
             height={50}
-            className="h-[50px] w-auto rounded-xl ring-1 ring-white/10"
+            className="h-[50px] w-auto"
           />
         </a>
       )}
@@ -76,7 +76,7 @@ function StoreButtons({ className = "" }: { className?: string }) {
             alt="Get it on Google Play"
             width={150}
             height={50}
-            className="h-[50px] w-auto rounded-xl ring-1 ring-white/10"
+            className="h-[50px] w-auto"
           />
         </a>
       )}
