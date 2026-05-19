@@ -5,9 +5,12 @@ export const metadata: Metadata = {
   title: "Xelfcon | List, Manage, Rent & Earn",
   description: "Digitize your property, find verified rentals fast, or become a caretaker and start earning.",
   icons: {
-    icon: "/decor/xelfcon-logo.png",
+    icon: [
+      { url: "/icon", type: "image/png", sizes: "32x32" },
+      { url: "/decor/xelfcon-logo.png", type: "image/png", sizes: "512x512" },
+    ],
     shortcut: "/decor/xelfcon-logo.png",
-    apple: "/decor/xelfcon-logo.png",
+    apple: "/apple-icon",
   },
 };
 

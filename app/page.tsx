@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState, useEffect } from "react";
+import Reveal from "./_components/Reveal";
 
 type Feature = {
   title: string;
@@ -16,7 +17,7 @@ type FaqItem = {
 
 function LogoMark() {
   return (
-    <div className="flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 shadow-soft backdrop-blur">
+    <div className="flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 shadow-soft backdrop-blur transition-transform duration-300 hover:scale-[1.02]">
       <Image
         src="/decor/xelfcon-logo.png"
         alt="Xelfcon Logo"
@@ -97,37 +98,41 @@ function PhoneStack({
     <div className="relative mx-auto h-[360px] w-full max-w-[220px] md:mx-0">
       <div
         className={[
-          "absolute top-12 h-[280px] w-[140px] rotate-[-4deg] rounded-2xl overflow-hidden ring-1 ring-white/15 shadow-soft z-10",
+          "animate-phone-back absolute top-12 z-10 h-[280px] w-[140px]",
           isLeft 
             ? "left-[calc(50%-80px)] md:left-0" 
             : "left-[calc(50%-60px)] md:left-auto md:right-0",
         ].join(" ")}
       >
-        <Image
-          src={backImage}
-          alt="Phone mockup"
-          width={140}
-          height={280}
-          className="h-full w-full object-cover"
-        />
+        <div className="h-full w-full rotate-[-4deg] overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-soft">
+          <Image
+            src={backImage}
+            alt="Phone mockup"
+            width={140}
+            height={280}
+            className="h-full w-full object-cover"
+          />
+        </div>
       </div>
       <div
         className={[
-          "absolute top-2 h-[300px] w-[150px] rotate-3 rounded-2xl overflow-hidden ring-1 ring-white/15 shadow-soft z-20",
+          "animate-phone-front absolute top-2 z-20 h-[300px] w-[150px]",
           isLeft 
             ? "left-1/2 -translate-x-1/2 md:left-10 md:translate-x-0" 
             : "left-1/2 -translate-x-1/2 md:right-10 md:translate-x-0",
         ].join(" ")}
       >
-        <Image
-          src={frontImage}
-          alt="Phone mockup"
-          width={150}
-          height={300}
-          className="h-full w-full object-cover"
-        />
+        <div className="h-full w-full rotate-3 overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-soft">
+          <Image
+            src={frontImage}
+            alt="Phone mockup"
+            width={150}
+            height={300}
+            className="h-full w-full object-cover"
+          />
+        </div>
       </div>
-      <div className="absolute inset-0 rounded-3xl opacity-60 blur-3xl bg-(--brand)/20 z-0" />
+      <div className="animate-float-glow absolute inset-0 z-0 rounded-3xl bg-(--brand)/20 opacity-60 blur-3xl" />
     </div>
   );
 }
@@ -135,13 +140,13 @@ function PhoneStack({
 function BulletHeading({ text }: { text: string }) {
   return (
     <div className="flex items-center gap-2 text-(--brand)">
-      <span className="h-2 w-2 rounded-full bg-(--brand) shadow-[0_0_16px_rgba(45,179,255,0.7)]" />
+      <span className="h-2 w-2 animate-pulse rounded-full bg-(--brand) shadow-[0_0_16px_rgba(45,179,255,0.7)]" />
       <h3 className="text-sm font-semibold tracking-wide md:text-base">{text}</h3>
     </div>
   );
 }
 
-function FeatureRow({ item }: { item: Feature }) {
+function FeatureRow({ item, index }: { item: Feature; index: number }) {
   const isLeft = item.align === "left";
   
   // Determine images based on feature title
@@ -167,25 +172,33 @@ function FeatureRow({ item }: { item: Feature }) {
             "md:grid-cols-2",
           ].join(" ")}
         >
-          <div className={isLeft ? "order-1" : "order-1 md:order-2"}>
-            <PhoneStack 
-              side={isLeft ? "left" : "right"} 
+          <Reveal
+            variant={isLeft ? "slide-right" : "slide-left"}
+            delay={index * 80}
+            className={isLeft ? "order-1" : "order-1 md:order-2"}
+          >
+            <PhoneStack
+              side={isLeft ? "left" : "right"}
               backImage={images.back}
               frontImage={images.front}
             />
-          </div>
+          </Reveal>
 
-          <div className={isLeft ? "order-2" : "order-2 md:order-1"}>
-            <div className="rounded-3xl border border-white/10 bg-white/4 p-5 shadow-soft backdrop-blur md:p-6">
-            <BulletHeading text={item.title} />
-            <p className="mt-3 text-sm leading-7 text-white/75 md:text-[15px]">
-              {item.body}
-            </p>
-            <div className="mt-4">
-              <StoreButtons />
+          <Reveal
+            variant={isLeft ? "slide-left" : "slide-right"}
+            delay={index * 80 + 100}
+            className={isLeft ? "order-2" : "order-2 md:order-1"}
+          >
+            <div className="rounded-3xl border border-white/10 bg-white/4 p-5 shadow-soft backdrop-blur transition-transform duration-500 hover:-translate-y-1 md:p-6">
+              <BulletHeading text={item.title} />
+              <p className="mt-3 text-sm leading-7 text-white/75 md:text-[15px]">
+                {item.body}
+              </p>
+              <div className="mt-4">
+                <StoreButtons />
+              </div>
             </div>
-            </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -197,7 +210,7 @@ function DropletPanel() {
     <div className="relative mx-auto mt-8 w-full max-w-[560px]">
       {/* droplet-ish shape */}
       <div className="absolute inset-0 -z-10 rounded-[42px] bg-[radial-gradient(120%_120%_at_50%_0%,rgba(45,179,255,0.35),rgba(255,255,255,0.04)_55%,rgba(0,0,0,0)_100%)] opacity-90" />
-      <div className="card-soft shadow-soft px-6 py-7 md:px-9 md:py-8">
+      <div className="card-soft shadow-soft px-6 py-7 transition-transform duration-500 hover:-translate-y-1 md:px-9 md:py-8">
         <p className="text-center text-sm leading-7 text-white/80 md:text-[15px]">
           Digitize your property, find verified rentals fast, or become a caretaker and start earning in our
           all in one powerful app.
@@ -213,7 +226,7 @@ function Faq({ items }: { items: FaqItem[] }) {
 
   return (
     <div className="grid gap-8 md:grid-cols-[1fr_1.2fr] md:gap-10">
-      <div>
+      <Reveal variant="slide-right">
         <h2 className="text-2xl font-semibold md:text-3xl">Faq</h2>
         <div className="mt-2 h-1 w-12 rounded-full bg-(--brand)" />
         <p className="mt-4 max-w-[340px] text-sm leading-7 text-white/70">
@@ -229,32 +242,36 @@ function Faq({ items }: { items: FaqItem[] }) {
             </div>
           </div>
         </div>
-      </div>
+      </Reveal>
 
       <div className="space-y-3">
         {items.map((it, idx) => {
           const isOpen = idx === openIndex;
           return (
-            <div key={it.q} className="overflow-hidden rounded-2xl border border-white/10 bg-white/4 shadow-soft backdrop-blur">
-              <button
-                type="button"
-                className={[
-                  "flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-colors",
-                  isOpen ? "bg-(--brand)/20" : "hover:bg-white/5",
-                ].join(" ")}
-                onClick={() => setOpenIndex(isOpen ? -1 : idx)}
-                aria-expanded={isOpen}
-              >
-                <span className="text-sm font-medium text-white/90">{it.q}</span>
-                <span className="text-white/70">{isOpen ? "▴" : "▾"}</span>
-              </button>
+            <Reveal key={it.q} variant="fade-up" delay={idx * 60}>
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/4 shadow-soft backdrop-blur transition-colors duration-300 hover:border-white/20">
+                <button
+                  type="button"
+                  className={[
+                    "flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-colors",
+                    isOpen ? "bg-(--brand)/20" : "hover:bg-white/5",
+                  ].join(" ")}
+                  onClick={() => setOpenIndex(isOpen ? -1 : idx)}
+                  aria-expanded={isOpen}
+                >
+                  <span className="text-sm font-medium text-white/90">{it.q}</span>
+                  <span className={`text-white/70 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}>
+                    ▾
+                  </span>
+                </button>
 
-              {isOpen && (
-                <div className="px-4 pb-4 pt-3 text-sm leading-6 text-white/70">
-                  {it.a}
+                <div className={`faq-answer ${isOpen ? "faq-answer-open" : ""}`}>
+                  <div className="faq-answer-inner">
+                    <div className="px-4 pb-4 pt-3 text-sm leading-6 text-white/70">{it.a}</div>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            </Reveal>
           );
         })}
       </div>
@@ -324,12 +341,12 @@ export default function Page() {
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(120%_80%_at_50%_120%,rgba(2,8,18,0.85),rgba(2,8,18,0)_45%)]" />
 
       {/* Top nav */}
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-black/35 backdrop-blur-xl">
+      <header className="animate-header sticky top-0 z-30 border-b border-white/10 bg-black/35 backdrop-blur-xl">
         <div className="container-page flex items-center justify-between py-4">
           <LogoMark />
 
           <nav className="hidden items-center gap-2 text-sm text-white/80 md:flex">
-            <a href="#features" className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white">Features</a>
+            <a href="#features" className="rounded-full px-4 py-2 transition-colors duration-300 hover:bg-white/10 hover:text-white">Features</a>
             <a href="#more" className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white">More</a>
             <a href="#faq" className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white">FAQ</a>
           </nav>
@@ -384,7 +401,7 @@ export default function Page() {
             alt=""
             width={800}
             height={800}
-            className="w-full max-w-[600px] md:max-w-[800px] h-auto object-contain opacity-20 md:opacity-30 scale-75 md:scale-100"
+            className="animate-hero-mark h-auto w-full max-w-[600px] scale-75 object-contain opacity-20 md:max-w-[800px] md:scale-100 md:opacity-30"
             priority
             aria-hidden="true"
           />
@@ -394,7 +411,7 @@ export default function Page() {
         
         <div className="container-page relative z-10">
           
-          <div className="relative mx-auto max-w-[760px] text-center">
+          <div className="hero-stagger relative mx-auto max-w-[760px] text-center">
 
 
 
@@ -415,24 +432,27 @@ export default function Page() {
 
       {/* Features title */}
       <section id="features" className="mt-10 md:mt-14">
-        <div className="container-page">
+        <Reveal className="container-page">
           <h2 className="section-title">Features</h2>
-          <div className="underline" />
-        </div>
+          <div className="animate-underline underline" />
+        </Reveal>
       </section>
 
       {/* Feature rows */}
-      {features.map((f) => (
-        <FeatureRow key={f.title} item={f} />
+      {features.map((f, index) => (
+        <FeatureRow key={f.title} item={f} index={index} />
       ))}
 
       {/* More about */}
       <section id="more" className="mt-16 md:mt-22">
         <div className="container-page">
-          <h2 className="section-title">More about Xelfcon</h2>
-          <div className="underline" />
+          <Reveal>
+            <h2 className="section-title">More about Xelfcon</h2>
+            <div className="animate-underline underline" />
+          </Reveal>
 
-          <div className="mt-10 grid items-center gap-10 rounded-3xl border border-white/10 bg-white/3 p-5 shadow-soft backdrop-blur md:grid-cols-2 md:gap-12 md:p-7">
+          <Reveal delay={120} className="mt-10">
+          <div className="grid items-center gap-10 rounded-3xl border border-white/10 bg-white/3 p-5 shadow-soft backdrop-blur transition-transform duration-500 hover:-translate-y-1 md:grid-cols-2 md:gap-12 md:p-7">
             <div className="flex justify-center md:justify-start">
               <div className="relative h-[320px] w-full max-w-[520px]">
                 <div className="absolute left-0 top-8 h-[280px] w-[140px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
@@ -490,19 +510,20 @@ export default function Page() {
               </div>
             </div>
           </div>
+          </Reveal>
         </div>
       </section>
 
       {/* FAQ */}
       <section id="faq" className="mt-18 pb-16 md:mt-24">
-        <div className="container-page">
+        <Reveal className="container-page">
           <Faq items={faqItems} />
-        </div>
+        </Reveal>
       </section>
 
       {/* Footer download + socials */}
       <footer className="border-t border-white/10 bg-black/45">
-        <div className="container-page py-12">
+        <Reveal className="container-page py-12">
           <h3 className="text-center text-lg font-semibold text-white/90">
             What are you waiting for? Download Now!
           </h3>
@@ -534,7 +555,7 @@ export default function Page() {
               <a className="hover:text-white/80" href="#">Cookie Policy</a>
             </div>
           </div>
-        </div>
+        </Reveal>
       </footer>
     </main>
   );
