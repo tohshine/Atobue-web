@@ -212,8 +212,7 @@ function DropletPanel() {
       <div className="absolute inset-0 -z-10 rounded-[42px] bg-[radial-gradient(120%_120%_at_50%_0%,rgba(45,179,255,0.35),rgba(255,255,255,0.04)_55%,rgba(0,0,0,0)_100%)] opacity-90" />
       <div className="card-soft shadow-soft px-6 py-7 transition-transform duration-500 hover:-translate-y-1 md:px-9 md:py-8">
         <p className="text-center text-sm leading-7 text-white/80 md:text-[15px]">
-          Digitize your property, find verified rentals fast, or become a caretaker and start earning in our
-          all in one powerful app.
+          List your property, find a place to rent, or pick up caretaker work. It is all in one app.
         </p>
         <StoreButtons className="mt-5 justify-center" />
       </div>
@@ -230,7 +229,7 @@ function Faq({ items }: { items: FaqItem[] }) {
         <h2 className="text-2xl font-semibold md:text-3xl">Faq</h2>
         <div className="mt-2 h-1 w-12 rounded-full bg-(--brand)" />
         <p className="mt-4 max-w-[340px] text-sm leading-7 text-white/70">
-          Got questions? We’ve answered the most common things users ask about using, renting, managing, or earning with Xelfcon.
+          Common questions about listing, renting, managing, or earning on Xelfcon.
         </p>
 
         <div className="mt-6 max-w-[320px]">
@@ -285,19 +284,19 @@ export default function Page() {
       {
         title: "List and manage your property",
         body:
-          "As a property owner, you can easily set up your property, list any space you have available for rent, keep track of your tenants, and even hire someone to help manage things for you. It’s a simple way to stay in control of your property without stress.",
+          "Got a place to rent out? Add your property, list whatever space is free, keep an eye on tenants, and bring in a caretaker if you want help with the day to day. You stay in charge without running around.",
         align: "left",
       },
       {
         title: "Looking for a place? Start here",
         body:
-          "You can easily find places to rent, whether it’s a room, apartment, condo, or an entire house. You can also discover lands available for rent for things like farming, business, or other personal use. Whatever you’re looking for, Xelfcon helps you find the right space that fits your needs.",
+          "Need somewhere to live? Look through rooms, apartments, condos, and full houses on Xelfcon. Narrow it down by area and price, see what is included, and message the landlord when you find a fit.",
         align: "right",
       },
       {
         title: "Earn monthly as a caretaker",
         body:
-          "Start earning a monthly income by managing a property assigned to you. Your job can include routine weekly checks, responding to tenant complaints, reporting issues, and ensuring repairs are handled properly.",
+          "Caretakers get paid each month to look after a property an owner assigns them. That might mean weekly checks, answering tenant messages, flagging problems, and making sure repairs actually get done.",
         align: "left",
       },
     ],
@@ -308,23 +307,23 @@ export default function Page() {
     () => [
       {
         q: "What can I do on the Xelfcon app as a property owner?",
-        a: "You can list your property for rent, manage tenant information, and assign a caretaker to handle complaints, routine checks, and repairs. The app helps you stay organized without needing to be physically present.",
+        a: "List your property, keep tenant details in one place, and assign a caretaker for complaints, checks, and repairs. You do not have to be on site for everything.",
       },
       {
         q: "What kind of spaces can renters find on Xelfcon?",
-        a: "Renters can find rooms, apartments, houses, and other rentable spaces. Depending on your listings, this may also include land for business or personal use.",
+        a: "Rooms, apartments, condos, and houses from landlords on the app. Residential rentals only, the kind you move into and live in.",
       },
       {
         q: "How do I earn money through the caretaker program?",
-        a: "If you’re approved and assigned to manage a property, you can earn a monthly income by performing agreed tasks like checks, issue reporting, and coordinating repairs.",
+        a: "Once you are approved and assigned to a property, you get paid monthly for the tasks you agreed to, like checks, reporting issues, and lining up repairs.",
       },
       {
         q: "As a caretaker do I have to work every day?",
-        a: "No. Care tasks are typically scheduled (e.g., weekly checks) plus responding when issues occur. The exact schedule depends on the property owner’s agreement.",
+        a: "No. Most work is on a set schedule, like a weekly check, plus jumping in when something comes up. The owner and you agree on what that looks like.",
       },
       {
         q: "Can I list more than one property on Xelfcon?",
-        a: "Yes. You can list multiple properties and manage them within your account, depending on your plan and verification requirements.",
+        a: "Yes. Add as many properties as your plan allows. Each one may need to pass verification before it goes live.",
       },
     ],
     []
@@ -422,7 +421,7 @@ export default function Page() {
               <span className="text-(--brand)">Xelfcon</span>
             </h1>
             <p className="mx-auto mt-4 max-w-[560px] text-sm leading-7 text-white/70 md:text-base">
-              A modern property platform built to help owners, renters, and caretakers work together with less stress and better visibility.
+              One app for landlords, renters, and caretakers. List a home, find a rental, or get paid to help look after a building.
             </p>
 
             <DropletPanel />
@@ -500,10 +499,9 @@ export default function Page() {
             <div className="md:pr-4">
               <BulletHeading text="Everything you need in one place" />
               <p className="mt-3 text-sm leading-7 text-white/75 md:text-[15px]">
-                Whether you’re renting, managing, or working, Xelfcon brings it all together in one simple app.
-                Property owners can list and manage rental spaces, track tenants, and assign caretakers to handle
-                complaints and repairs. Renters can find rooms, houses, apartments, or land. Caretakers can earn
-                monthly by helping owners with checks and issue follow-ups.
+                Owners list spaces, track tenants, and hand off complaints and repairs to a caretaker when they want to.
+                Renters browse rooms, apartments, condos, and houses. Caretakers pick up monthly pay for checks and
+                follow ups on whatever property they are assigned to.
               </p>
               <div className="mt-5">
                 <StoreButtons />
