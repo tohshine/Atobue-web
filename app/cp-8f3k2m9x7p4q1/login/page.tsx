@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { adminRoutes } from "@/lib/admin-path";
 import { setAdminAuthenticated } from "../_lib/storage";
 
 export default function AdminLoginPage() {
@@ -19,7 +20,7 @@ export default function AdminLoginPage() {
     }
     setShowError(false);
     setAdminAuthenticated(true);
-    router.push("/admin/overview");
+    router.push(adminRoutes.overview);
   };
 
   return (

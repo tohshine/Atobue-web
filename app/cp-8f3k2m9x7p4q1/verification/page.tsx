@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import { AdminUser, getUsers, updateUserVerification, UserVerificationStatus } from "../_lib/users";
@@ -87,7 +88,7 @@ export default function AdminVerificationPage() {
   return (
     <AdminGuard>
       <AdminShell
-        active="/admin/verification"
+        active={adminRoutes.verification}
         title="Document Verification"
         subtitle="Review uploads, verify identity, and approve or deny requests"
       >

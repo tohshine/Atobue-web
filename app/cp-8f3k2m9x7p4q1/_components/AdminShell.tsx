@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { ReactNode } from "react";
+import { adminRoutes } from "@/lib/admin-path";
 import SignOutButton from "./SignOutButton";
 
 const NAV_ITEMS = [
-  { href: "/admin/overview", label: "Overview" },
-  { href: "/admin/users", label: "Users" },
-  { href: "/admin/verification", label: "Verification" },
-  { href: "/admin/conflicts", label: "Conflicts" },
-  { href: "/admin/ledger", label: "Ledger" },
-  { href: "/admin/refunds", label: "Refunds" },
-  { href: "/admin/controls", label: "Controls" },
+  { href: adminRoutes.overview, label: "Overview" },
+  { href: adminRoutes.users, label: "Users" },
+  { href: adminRoutes.verification, label: "Verification" },
+  { href: adminRoutes.conflicts, label: "Conflicts" },
+  { href: adminRoutes.ledger, label: "Ledger" },
+  { href: adminRoutes.refunds, label: "Refunds" },
+  { href: adminRoutes.controls, label: "Controls" },
 ];
 
 export default function AdminShell({

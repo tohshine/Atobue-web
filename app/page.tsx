@@ -15,6 +15,60 @@ type FaqItem = {
   a: string;
 };
 
+const SOCIAL_HANDLE = "Xelfcon";
+
+const SOCIAL_LINKS = {
+  x: `https://x.com/${SOCIAL_HANDLE}`,
+  instagram: `https://instagram.com/${SOCIAL_HANDLE}`,
+  tiktok: `https://tiktok.com/@${SOCIAL_HANDLE}`,
+  youtube: `https://youtube.com/@${SOCIAL_HANDLE}`,
+} as const;
+
+function SocialLinks({
+  size = "md",
+  className = "",
+}: {
+  size?: "sm" | "md";
+  className?: string;
+}) {
+  const buttonClass =
+    size === "sm"
+      ? "grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-opacity hover:opacity-100"
+      : "grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-all hover:opacity-100";
+  const iconClass = size === "sm" ? "h-4 w-4" : "h-5 w-5";
+  const iconSize = size === "sm" ? 20 : 24;
+
+  const items = [
+    { href: SOCIAL_LINKS.x, label: "X", src: "/decor/x.png", alt: "X" },
+    { href: SOCIAL_LINKS.instagram, label: "Instagram", src: "/decor/instagram.png", alt: "Instagram" },
+    { href: SOCIAL_LINKS.tiktok, label: "TikTok", src: "/decor/tiktok.png", alt: "TikTok" },
+    { href: SOCIAL_LINKS.youtube, label: "YouTube", src: "/decor/youtube.png", alt: "YouTube" },
+  ] as const;
+
+  return (
+    <div className={`flex items-center ${size === "sm" ? "gap-4" : "gap-3"} ${className}`}>
+      {items.map((item) => (
+        <a
+          key={item.label}
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={item.label}
+          className={buttonClass}
+        >
+          <Image
+            src={item.src}
+            alt={item.alt}
+            width={iconSize}
+            height={iconSize}
+            className={iconClass}
+          />
+        </a>
+      ))}
+    </div>
+  );
+}
+
 function LogoMark() {
   return (
     <div className="flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 shadow-soft backdrop-blur transition-transform duration-300 hover:scale-[1.02]">
@@ -350,44 +404,7 @@ export default function Page() {
             <a href="#faq" className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white">FAQ</a>
           </nav>
 
-          <div className="flex items-center gap-3">
-            <a href="#" aria-label="X" className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-all hover:opacity-100">
-              <Image
-                src="/decor/x.png"
-                alt="X"
-                width={24}
-                height={24}
-                className="h-5 w-5"
-              />
-            </a>
-            <a href="#" aria-label="Instagram" className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-all hover:opacity-100">
-              <Image
-                src="/decor/instagram.png"
-                alt="Instagram"
-                width={24}
-                height={24}
-                className="h-5 w-5"
-              />
-            </a>
-            <a href="#" aria-label="TikTok" className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-all hover:opacity-100">
-              <Image
-                src="/decor/tiktok.png"
-                alt="TikTok"
-                width={24}
-                height={24}
-                className="h-5 w-5"
-              />
-            </a>
-            <a href="#" aria-label="YouTube" className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-all hover:opacity-100">
-              <Image
-                src="/decor/youtube.png"
-                alt="YouTube"
-                width={24}
-                height={24}
-                className="h-5 w-5"
-              />
-            </a>
-          </div>
+          <SocialLinks />
         </div>
       </header>
 
@@ -532,20 +549,7 @@ export default function Page() {
 
           <div className="mt-10 flex flex-col items-center justify-between gap-6 border-t border-white/10 pt-7 md:flex-row">
             <div className="text-xs text-white/50">© Xelfcon 2024</div>
-            <div className="flex items-center gap-4 text-white/70">
-              <a href="#" aria-label="X" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-opacity hover:opacity-100">
-                <Image src="/decor/x.png" alt="X" width={20} height={20} className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label="Instagram" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-opacity hover:opacity-100">
-                <Image src="/decor/instagram.png" alt="Instagram" width={20} height={20} className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label="TikTok" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-opacity hover:opacity-100">
-                <Image src="/decor/tiktok.png" alt="TikTok" width={20} height={20} className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label="YouTube" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/5 opacity-80 transition-opacity hover:opacity-100">
-                <Image src="/decor/youtube.png" alt="YouTube" width={20} height={20} className="h-4 w-4" />
-              </a>
-            </div>
+            <SocialLinks size="sm" className="text-white/70" />
 
             <div className="flex items-center gap-6 text-xs text-white/50">
               <a className="hover:text-white/80" href="#">Privacy Policies</a>

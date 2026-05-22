@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import { formatCurrency, LedgerEntry, RefundRequest } from "../_lib/data";
@@ -60,7 +61,7 @@ export default function AdminOverviewPage() {
   return (
     <AdminGuard>
       <AdminShell
-        active="/admin/overview"
+        active={adminRoutes.overview}
         title="Overview"
         subtitle="Finance health at a glance"
       >

@@ -1,5 +1,6 @@
 "use client";
 
+import { adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import { formatCurrency } from "../_lib/data";
@@ -8,7 +9,7 @@ export default function AdminControlsPage() {
   return (
     <AdminGuard>
       <AdminShell
-        active="/admin/controls"
+        active={adminRoutes.controls}
         title="Controls"
         subtitle="Essential compliance and automation controls"
       >

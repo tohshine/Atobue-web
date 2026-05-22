@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import { ConflictDomain, ConflictItem, ConflictStatus, getConflicts, resolveConflict } from "../_lib/conflicts";
@@ -107,7 +108,7 @@ export default function AdminConflictsPage() {
   return (
     <AdminGuard>
       <AdminShell
-        active="/admin/conflicts"
+        active={adminRoutes.conflicts}
         title="Conflict Resolve Center"
         subtitle="Users, transactions, and chats source-of-truth detection"
       >

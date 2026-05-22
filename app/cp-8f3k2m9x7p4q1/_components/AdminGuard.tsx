@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
+import { adminRoutes } from "@/lib/admin-path";
 import { isAdminAuthenticated } from "../_lib/storage";
 
 export default function AdminGuard({ children }: { children: ReactNode }) {
@@ -10,7 +11,7 @@ export default function AdminGuard({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!isAdminAuthenticated()) {
-      router.replace("/admin/login");
+      router.replace(adminRoutes.login);
       return;
     }
     setReady(true);

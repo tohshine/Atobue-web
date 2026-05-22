@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { adminLedgerUrl, adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import { formatCurrency, LedgerEntry } from "../_lib/data";
@@ -87,7 +88,7 @@ export default function AdminUsersPage() {
   return (
     <AdminGuard>
       <AdminShell
-        active="/admin/users"
+        active={adminRoutes.users}
         title="Users"
         subtitle="Get users and monitor account health"
       >
@@ -182,7 +183,7 @@ export default function AdminUsersPage() {
                         <td className="px-3 py-3 font-medium text-rose-200">{formatCurrency(ledgerStats.outflow)}</td>
                         <td className="px-3 py-3 text-center align-middle">
                           <Link
-                            href={`/admin/ledger?userId=${user.id}`}
+                            href={adminLedgerUrl(user.id)}
                             className="inline-flex min-w-[96px] items-center justify-center rounded-lg border border-white/15 bg-white/5 px-2.5 py-1 text-xs text-white/90 transition hover:bg-white/10"
                           >
                             View Ledger

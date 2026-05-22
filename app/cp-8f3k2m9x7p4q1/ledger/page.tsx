@@ -2,6 +2,7 @@
 
 import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import {
@@ -119,7 +120,7 @@ function AdminLedgerPageInner() {
   return (
     <AdminGuard>
       <AdminShell
-        active="/admin/ledger"
+        active={adminRoutes.ledger}
         title="Ledger"
         subtitle="Track inflow and outflow entries"
       >

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { adminRoutes } from "@/lib/admin-path";
 import { clearAdminSession } from "../_lib/storage";
 
 export default function SignOutButton() {
@@ -8,7 +9,7 @@ export default function SignOutButton() {
 
   const handleSignOut = () => {
     clearAdminSession();
-    router.replace("/admin/login");
+    router.replace(adminRoutes.login);
   };
 
   return (

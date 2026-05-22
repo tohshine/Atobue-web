@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import { formatCurrency, prettyDate, RefundRequest, RefundStatus } from "../_lib/data";
@@ -35,7 +36,7 @@ export default function AdminRefundsPage() {
   return (
     <AdminGuard>
       <AdminShell
-        active="/admin/refunds"
+        active={adminRoutes.refunds}
         title="Refunds"
         subtitle="Approve, reject, and hold refund requests"
       >
