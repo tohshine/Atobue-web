@@ -13,7 +13,11 @@ export const adminRoutes = {
   controls: `${ADMIN_BASE_PATH}/controls`,
 } as const;
 
-export function adminLedgerUrl(userId?: string) {
-  if (!userId) return adminRoutes.ledger;
-  return `${adminRoutes.ledger}?userId=${encodeURIComponent(userId)}`;
+export function adminLedgerUrl(userId?: string, transactionId?: string) {
+  const params = new URLSearchParams();
+  if (userId) params.set("userId", userId);
+  if (transactionId) params.set("transactionId", transactionId);
+  const query = params.toString();
+  if (!query) return adminRoutes.ledger;
+  return `${adminRoutes.ledger}?${query}`;
 }

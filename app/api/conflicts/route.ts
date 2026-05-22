@@ -8,5 +8,6 @@ export async function GET() {
     total: conflicts.length,
     open: conflicts.filter((item) => item.status === "open").length,
     resolved: conflicts.filter((item) => item.status === "resolved").length,
+    escalated: conflicts.filter((item) => item.status === "escalated").length,
   });
 }

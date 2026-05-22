@@ -52,6 +52,10 @@ function AdminLedgerPageInner() {
           if (userIdFromQuery && payload.users.some((user) => user.id === userIdFromQuery)) {
             setLedgerUserFilter(userIdFromQuery);
           }
+          const transactionIdFromQuery = searchParams.get("transactionId");
+          if (transactionIdFromQuery) {
+            setQuery(transactionIdFromQuery);
+          }
         }
       } catch {
         setUsers([]);
