@@ -149,39 +149,39 @@ function PhoneStack({
 }) {
   const isLeft = side === "left";
   return (
-    <div className="relative mx-auto h-[360px] w-full max-w-[220px] md:mx-0">
+    <div className="relative mx-auto h-[460px] w-full max-w-[300px] md:mx-0 md:h-[520px] md:max-w-[340px]">
       <div
         className={[
-          "animate-phone-back absolute top-12 z-10 h-[280px] w-[140px]",
+          "animate-phone-back absolute top-14 z-10 h-[360px] w-[180px] md:top-16 md:h-[400px] md:w-[200px]",
           isLeft 
-            ? "left-[calc(50%-80px)] md:left-0" 
-            : "left-[calc(50%-60px)] md:left-auto md:right-0",
+            ? "left-[calc(50%-100px)] md:left-0" 
+            : "left-[calc(50%-80px)] md:left-auto md:right-0",
         ].join(" ")}
       >
         <div className="h-full w-full rotate-[-4deg] overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-soft">
           <Image
             src={backImage}
             alt="Phone mockup"
-            width={140}
-            height={280}
+            width={200}
+            height={400}
             className="h-full w-full object-cover"
           />
         </div>
       </div>
       <div
         className={[
-          "animate-phone-front absolute top-2 z-20 h-[300px] w-[150px]",
+          "animate-phone-front absolute top-3 z-20 h-[390px] w-[195px] md:top-4 md:h-[430px] md:w-[215px]",
           isLeft 
-            ? "left-1/2 -translate-x-1/2 md:left-10 md:translate-x-0" 
-            : "left-1/2 -translate-x-1/2 md:right-10 md:translate-x-0",
+            ? "left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0" 
+            : "left-1/2 -translate-x-1/2 md:right-12 md:translate-x-0",
         ].join(" ")}
       >
         <div className="h-full w-full rotate-3 overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-soft">
           <Image
             src={frontImage}
             alt="Phone mockup"
-            width={150}
-            height={300}
+            width={215}
+            height={430}
             className="h-full w-full object-cover"
           />
         </div>
@@ -468,52 +468,51 @@ export default function Page() {
           </Reveal>
 
           <Reveal delay={120} className="mt-10">
-          <div className="grid items-center gap-10 rounded-3xl border border-white/10 bg-white/3 p-5 shadow-soft backdrop-blur transition-transform duration-500 hover:-translate-y-1 md:grid-cols-2 md:gap-12 md:p-7">
-            <div className="flex justify-center md:justify-start">
-              <div className="relative h-[320px] w-full max-w-[520px]">
-                <div className="absolute left-0 top-8 h-[280px] w-[140px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+          <div className="grid items-start gap-10 rounded-3xl border border-white/10 bg-white/3 p-5 shadow-soft backdrop-blur transition-transform duration-500 hover:-translate-y-1 md:grid-cols-2 md:gap-12 md:p-7">
+            <div className="min-w-0 overflow-hidden">
+              <div className="relative mx-auto h-[340px] w-[300px] sm:w-[340px] md:mx-0 md:h-[400px] md:w-full md:max-w-[400px]">
+                <div className="absolute left-0 top-10 h-[300px] w-[150px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft md:top-12 md:h-[360px] md:w-[180px]">
                   <Image
                     src="/decor/xelfcon-more-1.png"
                     alt="Phone mockup"
-                    width={140}
-                    height={280}
+                    width={180}
+                    height={360}
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute left-20 top-4 h-[300px] w-[150px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                <div className="absolute left-12 top-5 h-[320px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft md:left-[4.5rem] md:top-6 md:h-[380px] md:w-[190px]">
                   <Image
                     src="/decor/xelfcon-more-2.png"
                     alt="Phone mockup"
-                    width={150}
-                    height={300}
+                    width={190}
+                    height={380}
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute left-40 top-8 h-[280px] w-[140px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                <div className="absolute left-24 top-10 h-[300px] w-[150px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft md:left-[9rem] md:top-12 md:h-[360px] md:w-[180px]">
                   <Image
                     src="/decor/xelfcon-more-3.png"
                     alt="Phone mockup"
-                    width={140}
-                    height={280}
+                    width={180}
+                    height={360}
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute left-60 top-6 h-[290px] w-[145px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft">
+                <div className="absolute left-36 top-7 h-[310px] w-[155px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft md:left-[13.5rem] md:top-8 md:h-[370px] md:w-[185px]">
                   <Image
                     src="/decor/xelfcon-more-4.png"
                     alt="Phone mockup"
-                    width={145}
-                    height={290}
+                    width={185}
+                    height={370}
                     className="h-full w-full object-cover"
                   />
                 </div>
 
-                
                 <div className="absolute inset-0 -z-10 rounded-[40px] bg-[radial-gradient(120%_120%_at_50%_0%,rgba(45,179,255,0.20),rgba(0,0,0,0)_65%)]" />
               </div>
             </div>
 
-            <div className="md:pr-4">
+            <div className="min-w-0 md:pr-4">
               <BulletHeading text="Everything you need in one place" />
               <p className="mt-3 text-sm leading-7 text-white/75 md:text-[15px]">
                 Owners list spaces, track tenants, and hand off complaints and repairs to a caretaker when they want to.
