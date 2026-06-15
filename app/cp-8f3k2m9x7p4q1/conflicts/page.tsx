@@ -11,12 +11,11 @@ import {
   ConflictItem,
   ConflictStatus,
   ConflictTicketType,
-  getConflicts,
   RESOLUTION_ACTION_LABELS,
   ResolutionAction,
-  resolveConflict,
   VacancyStatus,
 } from "../_lib/conflicts";
+import { useGetConflictsQuery, useResolveConflictMutation } from "@/lib/api";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-NG", {
@@ -102,33 +101,25 @@ function getSuggestedActions(conflict: ConflictItem): ResolutionAction[] {
 }
 
 export default function AdminConflictsPage() {
-  const [conflicts, setConflicts] = useState<ConflictItem[]>([]);
+  const { data, isLoading, error: fetchError } = useGetConflictsQuery();
+  const [resolveConflictMutation, { isLoading: resolving, isError: resolveFailed }] =
+    useResolveConflictMutation();
+  const conflicts = data?.conflicts ?? [];
   const [selectedId, setSelectedId] = useState("");
   const [typeFilter, setTypeFilter] = useState<"all" | ConflictTicketType>("all");
   const [statusFilter, setStatusFilter] = useState<"all" | ConflictStatus>("all");
-  const [loading, setLoading] = useState(true);
-  const [resolving, setResolving] = useState(false);
   const [resolutionNotes, setResolutionNotes] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const error = fetchError
+    ? "Unable to load conflict resolution center."
+    : resolveFailed
+      ? "Failed to apply resolution."
+      : null;
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        const payload = await getConflicts();
-        setConflicts(payload.conflicts);
-        if (payload.conflicts.length > 0) {
-          setSelectedId(payload.conflicts[0].id);
-        }
-        setError(null);
-      } catch {
-        setError("Unable to load conflict resolution center.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    void load();
-  }, []);
+    if (conflicts.length > 0 && !selectedId) {
+      setSelectedId(conflicts[0].id);
+    }
+  }, [conflicts, selectedId]);
 
   const filteredConflicts = useMemo(() => {
     return conflicts.filter((item) => {
@@ -155,16 +146,11 @@ export default function AdminConflictsPage() {
       return;
     }
 
-    try {
-      setResolving(true);
-      const payload = await resolveConflict(selectedConflict.id, action, resolutionNotes);
-      setConflicts((prev) => prev.map((item) => (item.id === selectedConflict.id ? payload.conflict : item)));
-      setError(null);
-    } catch {
-      setError("Failed to apply resolution.");
-    } finally {
-      setResolving(false);
-    }
+    await resolveConflictMutation({
+      conflictId: selectedConflict.id,
+      action,
+      notes: resolutionNotes,
+    });
   };
 
   return (
@@ -224,13 +210,13 @@ export default function AdminConflictsPage() {
               </label>
             </div>
 
-            {loading && (
+            {isLoading && (
               <div className="mt-5 rounded-xl border border-white/10 bg-white/5 px-4 py-8 text-center text-sm text-white/70">
                 Loading dispute tickets...
               </div>
             )}
 
-            {!loading && (
+            {!isLoading && (
               <div className="mt-5 space-y-2">
                 {filteredConflicts.map((conflict) => (
                   <button
@@ -276,7 +262,7 @@ export default function AdminConflictsPage() {
           </section>
 
           <section className="space-y-4">
-            {!selectedConflict && !loading && (
+            {!selectedConflict && !isLoading && (
               <div className="card-soft rounded-2xl px-4 py-12 text-center text-sm text-white/60">
                 Select a dispute ticket to review the full case context.
               </div>

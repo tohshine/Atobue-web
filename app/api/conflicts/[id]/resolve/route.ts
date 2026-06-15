@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { ResolutionAction } from "@/app/cp-8f3k2m9x7p4q1/_lib/conflicts";
+import type { ResolutionAction } from "@/lib/types";
 import { resolveConflictInStore } from "../../store";
 
 type RouteContext = {

@@ -13,7 +13,7 @@ import {
   TransactionType,
 } from "../_lib/data";
 import { getLedgerEntries, setLedgerEntries } from "../_lib/storage";
-import { AdminUser, getUsers } from "../_lib/users";
+import { useGetUsersQuery } from "@/lib/api";
 
 function statusPill(status: string) {
   const common = "inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize";
@@ -25,8 +25,9 @@ function statusPill(status: string) {
 
 function AdminLedgerPageInner() {
   const searchParams = useSearchParams();
+  const { data: usersData } = useGetUsersQuery();
+  const users = usersData?.users ?? [];
   const [ledgerEntries, setEntries] = useState<LedgerEntry[]>([]);
-  const [users, setUsers] = useState<AdminUser[]>([]);
   const [query, setQuery] = useState("");
   const [ledgerTypeFilter, setLedgerTypeFilter] = useState<"all" | TransactionType>("all");
   const [ledgerStatusFilter, setLedgerStatusFilter] = useState<"all" | TransactionStatus>("all");
@@ -42,32 +43,30 @@ function AdminLedgerPageInner() {
 
   useEffect(() => {
     setEntries(getLedgerEntries());
-    const loadUsers = async () => {
-      try {
-        const payload = await getUsers();
-        setUsers(payload.users);
-        if (payload.users.length > 0) {
-          setNewUserId(payload.users[0].id);
-          const userIdFromQuery = searchParams.get("userId");
-          if (userIdFromQuery && payload.users.some((user) => user.id === userIdFromQuery)) {
-            setLedgerUserFilter(userIdFromQuery);
-          }
-          const transactionIdFromQuery = searchParams.get("transactionId");
-          if (transactionIdFromQuery) {
-            setQuery(transactionIdFromQuery);
-          }
-        }
-      } catch {
-        setUsers([]);
-      }
-    };
-    void loadUsers();
-  }, [searchParams]);
+  }, []);
+
+  useEffect(() => {
+    if (users.length === 0) {
+      return;
+    }
+
+    setNewUserId((current) => current || users[0].user_info._id);
+
+    const userIdFromQuery = searchParams.get("userId");
+    if (userIdFromQuery && users.some((user) => user.user_info._id === userIdFromQuery)) {
+      setLedgerUserFilter(userIdFromQuery);
+    }
+
+    const transactionIdFromQuery = searchParams.get("transactionId");
+    if (transactionIdFromQuery) {
+      setQuery(transactionIdFromQuery);
+    }
+  }, [searchParams, users]);
 
   const userNameById = useMemo(
     () =>
       users.reduce<Record<string, string>>((acc, user) => {
-        acc[user.id] = user.fullName;
+        acc[user.user_info._id] = user.user_info.fullname;
         return acc;
       }, {}),
     [users]
@@ -164,8 +163,8 @@ function AdminLedgerPageInner() {
                   >
                     {users.length === 0 && <option value="">No users available</option>}
                     {users.map((user) => (
-                      <option key={user.id} value={user.id}>
-                        {user.fullName} ({user.id})
+                      <option key={user.user_info._id} value={user.user_info._id}>
+                        {user.user_info.fullname} ({user.user_info._id})
                       </option>
                     ))}
                   </select>
@@ -278,8 +277,8 @@ function AdminLedgerPageInner() {
                 >
                   <option value="all">All Users</option>
                   {users.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.fullName}
+                    <option key={user.user_info._id} value={user.user_info._id}>
+                      {user.user_info.fullname}
                     </option>
                   ))}
                 </select>

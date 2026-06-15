@@ -1,33 +1,13 @@
 import { INITIAL_LEDGER_ENTRIES, INITIAL_REFUNDS, LedgerEntry, RefundRequest } from "./data";
 
-const AUTH_KEY = "atobue-admin-auth";
+export { clearAuthSession as clearAdminSession, isAuthenticated as isAdminAuthenticated } from "@/lib/auth/session";
+
 const LEDGER_KEY = "atobue-admin-ledger";
 const REFUND_KEY = "atobue-admin-refunds";
 const DEFAULT_USER_ID = "USR-1001";
 
 function canUseStorage() {
   return typeof window !== "undefined";
-}
-
-export function isAdminAuthenticated() {
-  if (!canUseStorage()) {
-    return false;
-  }
-  return window.localStorage.getItem(AUTH_KEY) === "true";
-}
-
-export function setAdminAuthenticated(value: boolean) {
-  if (!canUseStorage()) {
-    return;
-  }
-  window.localStorage.setItem(AUTH_KEY, value ? "true" : "false");
-}
-
-export function clearAdminSession() {
-  if (!canUseStorage()) {
-    return;
-  }
-  window.localStorage.removeItem(AUTH_KEY);
 }
 
 export function getLedgerEntries() {

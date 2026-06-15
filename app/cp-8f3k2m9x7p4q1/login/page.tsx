@@ -2,25 +2,42 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLoginMutation } from "@/lib/api";
+import { setAuthSession } from "@/lib/auth/session";
 import { adminRoutes } from "@/lib/admin-path";
-import { setAdminAuthenticated } from "../_lib/storage";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const [login, { isLoading }] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
-  const [showError, setShowError] = useState(false);
+  const [validationError, setValidationError] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     if (!email.trim() || !password.trim()) {
-      setShowError(true);
+      setValidationError(true);
+      setApiError(null);
       return;
     }
-    setShowError(false);
-    setAdminAuthenticated(true);
-    router.push(adminRoutes.overview);
+
+    setValidationError(false);
+    setApiError(null);
+
+    try {
+      const { user, access_token } = await login({ email: email.trim(), password }).unwrap();
+      setAuthSession({ user, accessToken: access_token, rememberMe });
+      router.push(adminRoutes.overview);
+    } catch (error) {
+      const message =
+        error && typeof error === "object" && "message" in error
+          ? String(error.message)
+          : "Unable to sign in. Check your credentials and try again.";
+      setApiError(message);
+    }
   };
 
   return (
@@ -63,7 +80,9 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="admin@xelfon.com"
-                  className="mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-(--brand)"
+                  autoComplete="email"
+                  disabled={isLoading}
+                  className="mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-(--brand) disabled:opacity-60"
                 />
               </label>
 
@@ -74,7 +93,9 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   placeholder="Enter password"
-                  className="mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-(--brand)"
+                  autoComplete="current-password"
+                  disabled={isLoading}
+                  className="mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-(--brand) disabled:opacity-60"
                 />
               </label>
 
@@ -83,22 +104,30 @@ export default function AdminLoginPage() {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(event) => setRememberMe(event.target.checked)}
+                  disabled={isLoading}
                   className="h-4 w-4 rounded border-white/20 bg-white/5"
                 />
                 Keep me signed in on this device
               </label>
 
-              {showError && (
+              {validationError && (
                 <div className="rounded-xl border border-rose-300/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-100">
                   Provide both email and password to continue.
                 </div>
               )}
 
+              {apiError && (
+                <div className="rounded-xl border border-rose-300/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-100">
+                  {apiError}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full rounded-xl bg-(--brand) px-4 py-3 text-sm font-semibold text-slate-900 transition hover:brightness-110"
+                disabled={isLoading}
+                className="w-full rounded-xl bg-(--brand) px-4 py-3 text-sm font-semibold text-slate-900 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Sign In to Admin Console
+                {isLoading ? "Signing in..." : "Sign In to Admin Console"}
               </button>
             </form>
           </div>

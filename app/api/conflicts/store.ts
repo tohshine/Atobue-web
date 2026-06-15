@@ -9,7 +9,7 @@ import type {
   ResolutionAction,
   VacancyStatus,
   VacancySummary,
-} from "@/app/cp-8f3k2m9x7p4q1/_lib/conflicts";
+} from "@/lib/types";
 
 export type {
   ChatMessage,
