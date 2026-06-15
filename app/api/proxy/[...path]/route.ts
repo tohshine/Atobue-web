@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { applyCorsHeaders, getCorsHeaders, isAllowedOrigin } from "@/lib/cors";
 import { serverApiConfig } from "@/lib/api/server-config";
 
 const HOP_BY_HOP_HEADERS = new Set([
@@ -96,8 +97,23 @@ async function proxyRequest(request: NextRequest, pathSegments: string[]) {
 }
 
 async function handle(request: NextRequest, context: RouteContext) {
+  const origin = request.headers.get("origin");
+
+  if (request.method === "OPTIONS") {
+    if (!isAllowedOrigin(origin)) {
+      return new NextResponse(null, { status: 403 });
+    }
+
+    return new NextResponse(null, {
+      status: 204,
+      headers: getCorsHeaders(origin),
+    });
+  }
+
   const { path } = await context.params;
-  return proxyRequest(request, path);
+  const response = await proxyRequest(request, path);
+  applyCorsHeaders(response.headers, origin);
+  return response;
 }
 
 export const GET = handle;

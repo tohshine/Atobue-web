@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { applyCorsHeaders, getCorsHeaders, isAllowedOrigin } from "@/lib/cors";
 
 const PROBE_PREFIXES = [
   "/admin",
@@ -14,8 +15,31 @@ const PROBE_PREFIXES = [
   "/staff",
 ];
 
+function handleApiCors(request: NextRequest) {
+  const origin = request.headers.get("origin");
+
+  if (request.method === "OPTIONS") {
+    if (!isAllowedOrigin(origin)) {
+      return new NextResponse(null, { status: 403 });
+    }
+
+    return new NextResponse(null, {
+      status: 204,
+      headers: getCorsHeaders(origin),
+    });
+  }
+
+  const response = NextResponse.next();
+  applyCorsHeaders(response.headers, origin);
+  return response;
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (pathname.startsWith("/api/")) {
+    return handleApiCors(request);
+  }
 
   if (PROBE_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))) {
     return new NextResponse(null, { status: 404 });
@@ -26,6 +50,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/api/:path*",
     "/admin",
     "/admin/:path*",
     "/administrator",
