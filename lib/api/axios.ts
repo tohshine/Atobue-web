@@ -9,7 +9,7 @@ import {
   refreshAccessToken,
   resolveAccessToken,
 } from "@/lib/auth/tokens";
-import { apiConfig } from "./config";
+import { apiConfig, API_PROXY_BASE } from "./config";
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
@@ -17,7 +17,7 @@ type RetryableRequestConfig = InternalAxiosRequestConfig & {
 };
 
 export const apiClient = axios.create({
-  baseURL: apiConfig.baseUrl,
+  baseURL: API_PROXY_BASE,
   withCredentials: true,
   headers: { ...apiConfig.defaultHeaders },
 });
@@ -68,6 +68,10 @@ export function getAxiosErrorMessage(error: AxiosError): string {
 apiClient.interceptors.request.use(
   async (config) => {
     const retryableConfig = config as RetryableRequestConfig;
+
+    if (typeof window !== "undefined") {
+      retryableConfig.baseURL = API_PROXY_BASE;
+    }
 
     if (isAuthRoute(retryableConfig.url)) {
       return retryableConfig;

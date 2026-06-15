@@ -1,24 +1,24 @@
+/** Same-origin proxy path — browser always uses this to avoid CORS. */
+export const API_PROXY_BASE = "/api/proxy";
+
 /**
- * Central API configuration. All network calls read from here.
- *
- * Development: requests go through /api/proxy (same-origin) to avoid CORS.
- * Production: set NEXT_PUBLIC_API_BASE_URL to the external API.
+ * API base URL for axios / RTK Query.
+ * Browser requests always use the same-origin proxy, including production builds
+ * where NEXT_PUBLIC_API_BASE_URL may still point at api.xelfcon.com from an old deploy.
  */
-function getBaseUrl(): string {
-  const configured = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (configured) {
-    return configured;
+export function getApiBaseUrl(): string {
+  if (typeof window !== "undefined") {
+    return API_PROXY_BASE;
   }
 
-  if (process.env.NODE_ENV === "development") {
-    return "/api/proxy";
-  }
-
-  return "https://api.xelfcon.com/api";
+  const configured = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+  return configured || API_PROXY_BASE;
 }
 
 export const apiConfig = {
-  baseUrl: getBaseUrl(),
+  get baseUrl() {
+    return getApiBaseUrl();
+  },
   defaultHeaders: {
     "Content-Type": "application/json",
   },

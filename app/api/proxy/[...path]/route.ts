@@ -17,12 +17,11 @@ type RouteContext = {
   params: Promise<{ path: string[] }>;
 };
 
-function rewriteCookieForLocalhost(cookie: string, isSecureContext: boolean): string {
+function rewriteCookieForProxy(cookie: string, isSecureContext: boolean): string {
   let rewritten = cookie
     .replace(/;\s*Domain=[^;]*/gi, "")
     .replace(/;\s*SameSite=Strict/gi, "; SameSite=Lax");
 
-  // Browsers reject Secure cookies over plain http://localhost
   if (!isSecureContext) {
     rewritten = rewritten.replace(/;\s*Secure/gi, "");
   }
@@ -86,7 +85,7 @@ async function proxyRequest(request: NextRequest, pathSegments: string[]) {
   const isSecureContext = request.nextUrl.protocol === "https:";
 
   for (const rawCookie of collectSetCookies(upstream.headers)) {
-    responseHeaders.append("set-cookie", rewriteCookieForLocalhost(rawCookie, isSecureContext));
+    responseHeaders.append("set-cookie", rewriteCookieForProxy(rawCookie, isSecureContext));
   }
 
   return new NextResponse(upstream.body, {
@@ -122,3 +121,6 @@ export const PUT = handle;
 export const PATCH = handle;
 export const DELETE = handle;
 export const OPTIONS = handle;
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
