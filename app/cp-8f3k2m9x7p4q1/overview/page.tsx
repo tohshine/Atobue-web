@@ -1,10 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { adminRoutes } from "@/lib/admin-path";
 import { useGetSystemInfoQuery } from "@/lib/api";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import { formatCurrency, prettyDate } from "../_lib/data";
+import { getBalanceHidden, setBalanceHidden } from "../_lib/storage";
+
+const HIDDEN_BALANCE = "••••••";
+
+function formatBalance(amount: number, hidden: boolean) {
+  return hidden ? HIDDEN_BALANCE : formatCurrency(amount);
+}
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("en-NG", {
@@ -41,6 +49,57 @@ function UsersIcon({ className }: { className?: string }) {
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+function EyeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function EyeOffIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.1A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18.2 18.2 0 0 1-3.2 4.2M6.7 6.7C4.1 8.4 2 12 2 12a18.5 18.5 0 0 0 6.4 5.6M3 3l18 18"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function BalanceVisibilityToggle({
+  hidden,
+  onToggle,
+}: {
+  hidden: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={hidden}
+      aria-label={hidden ? "Show balance" : "Hide balance"}
+      title={hidden ? "Show balance" : "Hide balance"}
+      className="inline-flex items-center gap-1.5 rounded-full border border-fg-10 bg-surface-5 px-3 py-1.5 text-xs font-medium text-fg-70 transition hover:bg-surface-10 hover:text-fg"
+    >
+      {hidden ? <EyeOffIcon className="h-3.5 w-3.5" /> : <EyeIcon className="h-3.5 w-3.5" />}
+      {hidden ? "Show balance" : "Hide balance"}
+    </button>
   );
 }
 
@@ -144,6 +203,19 @@ function OverviewSkeleton() {
 
 export default function AdminOverviewPage() {
   const { data: system, isLoading, isError, refetch, isFetching } = useGetSystemInfoQuery();
+  const [balanceHidden, setBalanceHiddenState] = useState(false);
+
+  useEffect(() => {
+    setBalanceHiddenState(getBalanceHidden());
+  }, []);
+
+  const toggleBalanceVisibility = () => {
+    setBalanceHiddenState((current) => {
+      const next = !current;
+      setBalanceHidden(next);
+      return next;
+    });
+  };
 
   const cash = system?.cash;
   const users = system?.users;
@@ -179,14 +251,17 @@ export default function AdminOverviewPage() {
               <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-(--brand)/15 blur-3xl" />
               <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-widest text-white/50">Account Balance</p>
-                  <p className="mt-2 text-4xl font-semibold tracking-tight text-white md:text-5xl">
-                    {formatCurrency(cash.account_balance)}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <p className="text-xs font-medium uppercase tracking-widest text-fg-50">Account Balance</p>
+                    <BalanceVisibilityToggle hidden={balanceHidden} onToggle={toggleBalanceVisibility} />
+                  </div>
+                  <p className="mt-2 text-4xl font-semibold tracking-tight text-fg md:text-5xl">
+                    {formatBalance(cash.account_balance, balanceHidden)}
                   </p>
-                  <p className="mt-3 max-w-md text-sm text-white/60">
+                  <p className="mt-3 max-w-md text-sm text-fg-60">
                     Net position after completed flows, with{" "}
                     <span className="font-medium text-amber-200">
-                      {formatCurrency(cash.pending_refund_exposure)}
+                      {formatBalance(cash.pending_refund_exposure, balanceHidden)}
                     </span>{" "}
                     in pending refund exposure.
                   </p>
@@ -211,17 +286,25 @@ export default function AdminOverviewPage() {
                 description="Completed movements and net liquidity"
               />
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <MetricCard label="Completed Inflow" value={formatCurrency(cash.completed_inflow)} tone="positive" />
-                <MetricCard label="Completed Outflow" value={formatCurrency(cash.completed_outflow)} tone="negative" />
+                <MetricCard
+                  label="Completed Inflow"
+                  value={formatBalance(cash.completed_inflow, balanceHidden)}
+                  tone="positive"
+                />
+                <MetricCard
+                  label="Completed Outflow"
+                  value={formatBalance(cash.completed_outflow, balanceHidden)}
+                  tone="negative"
+                />
                 <MetricCard
                   label="Net Cashflow"
-                  value={formatCurrency(netCashflow)}
+                  value={formatBalance(netCashflow, balanceHidden)}
                   tone={netCashflow >= 0 ? "positive" : "negative"}
-                  sublabel={netCashflow >= 0 ? "Positive cycle" : "Review outflow policy"}
+                  sublabel={balanceHidden ? undefined : netCashflow >= 0 ? "Positive cycle" : "Review outflow policy"}
                 />
                 <MetricCard
                   label="Pending Refund Exposure"
-                  value={formatCurrency(cash.pending_refund_exposure)}
+                  value={formatBalance(cash.pending_refund_exposure, balanceHidden)}
                   tone="warning"
                 />
               </div>
@@ -281,12 +364,14 @@ export default function AdminOverviewPage() {
                   </div>
                   <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/5 px-4 py-3">
                     <p className="text-xs font-medium uppercase tracking-wide text-emerald-200/80">Health Signal</p>
-                    <p className="mt-2 text-sm text-white/70">
-                      {cash.pending_refund_exposure > 0
-                        ? `${formatCurrency(cash.pending_refund_exposure)} in refunds requires monitoring.`
-                        : netCashflow >= 0
-                          ? "Cash position is stable with no pending refund pressure."
-                          : "Negative net cashflow detected — review recent outflows."}
+                    <p className="mt-2 text-sm text-fg-70">
+                      {balanceHidden
+                        ? "Financial amounts are hidden."
+                        : cash.pending_refund_exposure > 0
+                          ? `${formatCurrency(cash.pending_refund_exposure)} in refunds requires monitoring.`
+                          : netCashflow >= 0
+                            ? "Cash position is stable with no pending refund pressure."
+                            : "Negative net cashflow detected — review recent outflows."}
                     </p>
                   </div>
                 </dl>

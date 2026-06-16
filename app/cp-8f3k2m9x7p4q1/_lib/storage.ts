@@ -4,6 +4,7 @@ export { clearAuthSession as clearAdminSession, isAuthenticated as isAdminAuthen
 
 const LEDGER_KEY = "atobue-admin-ledger";
 const REFUND_KEY = "atobue-admin-refunds";
+const BALANCE_HIDDEN_KEY = "atobue-admin-balance-hidden";
 const DEFAULT_USER_ID = "USR-1001";
 
 function canUseStorage() {
@@ -58,4 +59,18 @@ export function setRefundEntries(entries: RefundRequest[]) {
     return;
   }
   window.localStorage.setItem(REFUND_KEY, JSON.stringify(entries));
+}
+
+export function getBalanceHidden() {
+  if (!canUseStorage()) {
+    return false;
+  }
+  return window.localStorage.getItem(BALANCE_HIDDEN_KEY) === "true";
+}
+
+export function setBalanceHidden(hidden: boolean) {
+  if (!canUseStorage()) {
+    return;
+  }
+  window.localStorage.setItem(BALANCE_HIDDEN_KEY, hidden ? "true" : "false");
 }
