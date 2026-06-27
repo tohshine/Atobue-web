@@ -71,15 +71,13 @@ function SocialLinks({
 
 function LogoMark() {
   return (
-    <div className="flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 shadow-soft backdrop-blur transition-transform duration-300 hover:scale-[1.02]">
-      <Image
-        src="/decor/xelfcon-logo.png"
-        alt="Xelfcon Logo"
-        width={84}
-        height={28}
-        className="h-7 w-auto md:h-8"
-      />
-    </div>
+    <Image
+      src="/decor/xelfcon-logo.png"
+      alt="Xelfcon Logo"
+      width={36}
+      height={36}
+      className="h-9 w-9 rounded-lg transition-transform duration-300 hover:scale-[1.02] md:h-10 md:w-10"
+    />
   );
 }
 
@@ -410,20 +408,25 @@ export default function Page() {
 
       {/* Hero */}
       <section className="relative overflow-hidden pb-14 pt-12 md:pb-16 md:pt-16">
-        {/* Transparent faded background image */}
-        <div className="absolute inset-0 -z-20 flex items-center justify-center">
-          <Image
-            src="/decor/atobue-mark.png"
-            alt=""
-            width={800}
-            height={800}
-            className="animate-hero-mark h-auto w-full max-w-[600px] scale-75 object-contain opacity-20 md:max-w-[800px] md:scale-100 md:opacity-30"
-            priority
-            aria-hidden="true"
-          />
+        {/* Logo watermark — soft-light blend + radial fade into hero */}
+        <div className="pointer-events-none absolute inset-0 -z-20 flex items-center justify-center">
+          <div className="hero-mark-blend animate-hero-mark">
+            <Image
+              src="/decor/atobue-mark.png"
+              alt=""
+              width={800}
+              height={800}
+              className="h-auto w-full max-w-[600px] scale-75 object-contain md:max-w-[800px] md:scale-100"
+              priority
+              aria-hidden="true"
+            />
+          </div>
         </div>
-        {/* Black overlay */}
-        <div className="absolute inset-0 -z-10 bg-black/40 md:bg-black/30" aria-hidden="true" />
+        {/* Vignette tuned to page gradient tones */}
+        <div
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_90%_85%_at_50%_42%,rgba(77,173,255,0.06)_0%,rgba(16,37,72,0.35)_50%,rgba(7,17,32,0.72)_100%)]"
+          aria-hidden="true"
+        />
         
         <div className="container-page relative z-10">
           

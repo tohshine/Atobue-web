@@ -164,6 +164,19 @@ body {
     animation: glow-pulse 8s ease-in-out infinite;
   }
 
+  .hero-mark-blend {
+    opacity: 0.42;
+    mix-blend-mode: soft-light;
+    mask-image: radial-gradient(ellipse 72% 68% at 50% 48%, black 18%, transparent 72%);
+    -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 48%, black 18%, transparent 72%);
+  }
+
+  @media (min-width: 768px) {
+    .hero-mark-blend {
+      opacity: 0.52;
+    }
+  }
+
   .animate-float-glow {
     animation: float-soft 6s ease-in-out infinite;
   }
