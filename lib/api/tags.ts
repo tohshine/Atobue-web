@@ -7,6 +7,7 @@ export const apiTags = {
   system: "System",
   conflict: "Conflict",
   conflicts: "Conflicts",
+  adminData: "AdminData",
 } as const;
 
 export type ApiTagType = (typeof apiTags)[keyof typeof apiTags];

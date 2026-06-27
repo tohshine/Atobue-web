@@ -6,3 +6,4 @@ import "./auth";
 import "./system";
 import "./users";
 import "./conflicts";
+import "./admin-data";

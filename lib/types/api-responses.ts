@@ -6,6 +6,7 @@ import type {
   UserVerificationStatus,
 } from "./user";
 import type { ConflictItem, ResolutionAction } from "./conflict";
+import type { AdminPlatformData, BooleanOptionMap } from "./admin-data";
 import type { SystemInfo } from "./system";
 
 export type SystemUsersApiResponse = {
@@ -63,4 +64,19 @@ export type ResolveConflictResponse = {
 export type SystemInfoApiResponse = {
   success: boolean;
   data: SystemInfo;
+};
+
+export type AdminDataApiResponse = {
+  success: boolean;
+  data: AdminPlatformData;
+};
+
+export type AdminStringListApiResponse = {
+  success: boolean;
+  data: string[];
+};
+
+export type AdminBooleanMapApiResponse = {
+  success: boolean;
+  data: BooleanOptionMap;
 };

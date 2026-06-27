@@ -21,4 +21,16 @@ export const apiRoutes = {
     list: "/api/conflicts",
     resolve: (conflictId: string) => `/api/conflicts/${conflictId}/resolve`,
   },
+  adminData: {
+    // Public catalog reads (no /admin prefix)
+    amenities: "/data/amenities",
+    unitCategories: "/data/unit-categories",
+    durations: "/data/durations",
+    services: "/data/services",
+    // Admin writes — path is /admin/... only; proxy base is already https://api.xelfcon.com/api
+    // → POST https://api.xelfcon.com/api/admin/data/add-data
+    // → PUT  https://api.xelfcon.com/api/admin/data/remove-data
+    add: "/admin/data/add-data",
+    remove: "/admin/data/remove-data",
+  },
 } as const;

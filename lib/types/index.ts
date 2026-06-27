@@ -25,6 +25,13 @@ export type {
 export { RESOLUTION_ACTION_LABELS } from "./conflict";
 export type { SystemCashMetrics, SystemInfo, SystemUserMetrics } from "./system";
 export type {
+  AddAdminDataRequest,
+  AdminDataSection,
+  AdminPlatformData,
+  BooleanOptionMap,
+  RemoveAdminDataRequest,
+} from "./admin-data";
+export type {
   ConflictsResponse,
   ResolveConflictRequest,
   ResolveConflictResponse,
@@ -36,4 +43,7 @@ export type {
   VerificationsApiResponse,
   VerificationDetailApiResponse,
   VerificationUsersResponse,
+  AdminDataApiResponse,
+  AdminBooleanMapApiResponse,
+  AdminStringListApiResponse,
 } from "./api-responses";

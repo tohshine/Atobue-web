@@ -23,3 +23,13 @@ export {
   useGetConflictsQuery,
   useResolveConflictMutation,
 } from "./conflicts";
+export {
+  adminDataApi,
+  useGetUnitCategoriesQuery,
+  useGetRentDurationsQuery,
+  useGetFeaturesQuery,
+  useGetServicesQuery,
+  useGetAmenitiesQuery,
+  useAddAdminDataMutation,
+  useRemoveAdminDataMutation,
+} from "./admin-data";
