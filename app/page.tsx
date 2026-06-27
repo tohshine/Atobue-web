@@ -189,6 +189,54 @@ function PhoneStack({
   );
 }
 
+function MorePhoneStack() {
+  const phones = [
+    {
+      src: "/decor/xelfcon-more-1.png",
+      className:
+        "animate-phone-back absolute left-0 top-10 z-10 h-[300px] w-[150px] md:top-16 md:h-[400px] md:w-[200px]",
+      rotate: "-rotate-[4deg]",
+    },
+    {
+      src: "/decor/xelfcon-more-2.png",
+      className:
+        "animate-phone-front absolute left-12 top-3 z-20 h-[320px] w-[160px] md:left-18 md:top-4 md:h-[430px] md:w-[215px]",
+      rotate: "rotate-3",
+    },
+    {
+      src: "/decor/xelfcon-more-3.png",
+      className:
+        "animate-phone-back absolute left-24 top-10 z-30 h-[300px] w-[150px] md:left-36 md:top-16 md:h-[400px] md:w-[200px]",
+      rotate: "-rotate-[4deg]",
+    },
+    {
+      src: "/decor/xelfcon-more-4.png",
+      className:
+        "animate-phone-front absolute left-36 top-6 z-40 h-[310px] w-[155px] md:left-54 md:top-8 md:h-[430px] md:w-[215px]",
+      rotate: "rotate-3",
+    },
+  ] as const;
+
+  return (
+    <div className="relative mx-auto h-[460px] w-full max-w-[300px] md:mx-0 md:h-[520px] md:max-w-[430px]">
+      {phones.map((phone) => (
+        <div key={phone.src} className={phone.className}>
+          <div className={`h-full w-full overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-soft ${phone.rotate}`}>
+            <Image
+              src={phone.src}
+              alt="Phone mockup"
+              width={215}
+              height={430}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </div>
+      ))}
+      <div className="animate-float-glow absolute inset-0 z-0 rounded-3xl bg-(--brand)/20 opacity-60 blur-3xl" />
+    </div>
+  );
+}
+
 function BulletHeading({ text }: { text: string }) {
   return (
     <div className="flex items-center gap-2 text-(--brand)">
@@ -471,49 +519,8 @@ export default function Page() {
           </Reveal>
 
           <Reveal delay={120} className="mt-10">
-          <div className="grid items-start gap-10 rounded-3xl border border-white/10 bg-white/3 p-5 shadow-soft backdrop-blur transition-transform duration-500 hover:-translate-y-1 md:grid-cols-2 md:gap-12 md:p-7">
-            <div className="min-w-0 overflow-hidden">
-              <div className="relative mx-auto h-[340px] w-[300px] sm:w-[340px] md:mx-0 md:h-[400px] md:w-full md:max-w-[400px]">
-                <div className="absolute left-0 top-10 h-[300px] w-[150px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft md:top-12 md:h-[360px] md:w-[180px]">
-                  <Image
-                    src="/decor/xelfcon-more-1.png"
-                    alt="Phone mockup"
-                    width={180}
-                    height={360}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="absolute left-12 top-5 h-[320px] w-[160px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft md:left-[4.5rem] md:top-6 md:h-[380px] md:w-[190px]">
-                  <Image
-                    src="/decor/xelfcon-more-2.png"
-                    alt="Phone mockup"
-                    width={190}
-                    height={380}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="absolute left-24 top-10 h-[300px] w-[150px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft md:left-[9rem] md:top-12 md:h-[360px] md:w-[180px]">
-                  <Image
-                    src="/decor/xelfcon-more-3.png"
-                    alt="Phone mockup"
-                    width={180}
-                    height={360}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="absolute left-36 top-7 h-[310px] w-[155px] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-soft md:left-[13.5rem] md:top-8 md:h-[370px] md:w-[185px]">
-                  <Image
-                    src="/decor/xelfcon-more-4.png"
-                    alt="Phone mockup"
-                    width={185}
-                    height={370}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-
-                <div className="absolute inset-0 -z-10 rounded-[40px] bg-[radial-gradient(120%_120%_at_50%_0%,rgba(45,179,255,0.20),rgba(0,0,0,0)_65%)]" />
-              </div>
-            </div>
+          <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
+            <MorePhoneStack />
 
             <div className="min-w-0 md:pr-4">
               <BulletHeading text="Everything you need in one place" />
