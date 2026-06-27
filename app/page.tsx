@@ -208,7 +208,7 @@ function FeatureRow({ item, index }: { item: Feature; index: number }) {
     } else if (title.toLowerCase().includes("place") || title.toLowerCase().includes("rent")) {
       return { back: "/decor/xelfcon-space-feature-back.png", front: "/decor/xelfcon-space-feature-front.png" };
     } else if (title.toLowerCase().includes("caretaker") || title.toLowerCase().includes("earn")) {
-      return { back: "/decor/properties.png", front: "/decor/caretaker.png" };
+      return { back: "/decor/xelfcon-caretaker-feature-back.png", front: "/decor/xelfcon-caretaker-feature-front.png" };
     }
     return { back: "/decor/Explore.png", front: "/decor/properties.png" };
   };
