@@ -15,6 +15,230 @@ type FaqItem = {
   a: string;
 };
 
+type FaqCategory = {
+  title: string;
+  items: FaqItem[];
+};
+
+const FAQ_CATEGORIES: FaqCategory[] = [
+  {
+    title: "Account & Verification",
+    items: [
+      {
+        q: "1. How do I create an account on Xelfcon?",
+        a: "Tap Create Account on the welcome screen and sign up with your email and password. We send a 6 digit verification code to your email. Enter it on the OTP screen to verify your account.\n\nAfter verification, complete your profile with your first name, last name, phone number, and country of residence. You can then sign in and start using the app.",
+      },
+      {
+        q: "2. Do I need a password to log in?",
+        a: "Yes. Xelfcon uses email and password sign in. Enter your credentials on the login screen to access your account.\n\nAfter your first successful login, you may be prompted to enable Face ID or fingerprint login on supported devices for faster access next time.",
+      },
+      {
+        q: "3. I forgot my password. How do I reset it?",
+        a: "On the login screen, tap Forgot password? and enter your registered email. We send a reset code to your inbox.\n\nEnter the code on the OTP screen, then set a new password. Once updated, sign in with your new password.",
+      },
+      {
+        q: "4. I can't access my email anymore. What should I do?",
+        a: "If you no longer have access to the email on your account, contact our support team so we can help verify your identity and recover access.\n\nGo to More → Support → Contact support, or email support@atobue.com with your full name and a valid means of identification.",
+      },
+      {
+        q: "5. What does it mean to be a verified user?",
+        a: "A verified user has completed identity checks in the app. This is separate from creating an account or signing in.\n\nGo to More → Verification to submit your identification number, a government issued ID (passport, national ID, or driver's license), and a selfie. Once approved, you can create property workspaces and join the caretaker program.",
+      },
+      {
+        q: "6. How do I complete identity verification?",
+        a: "Open More → Verification and follow the steps in order:\n\n1. Save your identification number (based on your country of residence)\n2. Choose a document type and upload or scan your ID\n3. Take and upload a selfie for facial verification\n4. Submit for review\n\nYou can track pending, approved, or declined status on the same screen. If declined, follow the prompts to upload your documents again.",
+      },
+      {
+        q: "7. Why do I need to verify before listing properties?",
+        a: "Identity verification helps keep rentals and payouts trustworthy. You must be verified before you can create a property workspace in Hub.\n\nIf verification is still under review, workspace creation stays paused until your documents are approved.",
+      },
+      {
+        q: "8. How do I add a payout bank account?",
+        a: "Go to More → Payout bank account. Select your bank, enter your 10 digit account number, and confirm the resolved account name.\n\nYour payout bank is used for rental income and caretaker earnings. You can view or update it anytime from the Wallet screen.",
+      },
+    ],
+  },
+  {
+    title: "Properties & Vacancies",
+    items: [
+      {
+        q: "1. What is a property workspace?",
+        a: "A workspace is your management hub for one property, like a building or rental portfolio at a single address. Each workspace has its own dashboard where you list units, manage tenants, assign a caretaker, and track transactions.",
+      },
+      {
+        q: "2. How do I create a property workspace?",
+        a: 'Open the Hub tab, switch to the Workspace section, and tap Create a property Workspace (or use the + icon in the header).\n\nEnter a workspace name, search for the property address or use your current location to pin it on the map, and rate electricity and drainage quality. For UK properties, you can also add EPC and council tax band details.\n\nIdentity verification must be approved before you can create a workspace.',
+      },
+      {
+        q: "3. Can I manage more than one property?",
+        a: "Yes. You can create multiple workspaces, one per property. Each appears as a card in Hub → Workspace. Tap a card to open that property's management dashboard.",
+      },
+      {
+        q: "4. What is a unit vacancy?",
+        a: "A vacancy is a rentable unit inside your workspace, such as a room, flat, or apartment. Tenants discover published vacancies on the Find tab and can send enquiries from there.",
+      },
+      {
+        q: "5. How do I list a unit vacancy?",
+        a: "Open your workspace from Hub → Workspace, then tap List a unit vacancy. The form walks you through 8 steps:\n\n1. Unit details (category, title, description)\n2. Current tenant (if the unit is already occupied)\n3. Amenities\n4. Services\n5. Features (e.g. water source)\n6. Pricing (rent, caution fee, legal agreement fee)\n7. Rooms and layout (bedrooms, bathrooms, shared spaces)\n8. Photos (3 to 7 images)\n\nSubmit when all required steps are complete. Your listing can then appear on Explore.",
+      },
+      {
+        q: "6. Can I edit a vacancy after publishing?",
+        a: "Yes. Open the workspace, go to your listings, and select the unit to edit. Some fields may be locked once a tenant agreement is in place, for example if the listing status is already agreed.",
+      },
+      {
+        q: "7. What can I do from the workspace dashboard?",
+        a: "As a property owner, your dashboard includes tools such as:\n\n• List a unit vacancy\n• Maintenance requests and repairs\n• My caretaker (hire or manage)\n• Tenants and occupancy\n• Transactions\n• Message all tenants\n\nAvailable options depend on your role in that workspace.",
+      },
+    ],
+  },
+  {
+    title: "Caretaker Program",
+    items: [
+      {
+        q: "1. What is the caretaker program?",
+        a: "The caretaker program lets verified users offer property management services and get hired by landlords. Caretakers help with day to day tasks such as tenant coordination, maintenance follow up, and property oversight.",
+      },
+      {
+        q: "2. How do I join as a caretaker?",
+        a: 'Go to More → Caretaker program. You must complete identity verification first.\n\nTap to enroll and provide your service location (use "Use my current location" or enter your address), your monthly service fee, and a short bio describing your experience. Submit to activate your caretaker profile.',
+      },
+      {
+        q: "3. How do landlords hire a caretaker?",
+        a: "From a property workspace, open My caretaker. Browse available caretakers near the property, review their profile, service fee, and bio, then tap Hire caretaker to send a request.\n\nOnce approved, the caretaker gains access to that workspace with caretaker level permissions.",
+      },
+      {
+        q: "4. What can a caretaker do in a workspace?",
+        a: "Hired caretakers can access management tools such as maintenance requests, tenant records, transactions, and messaging, depending on what the landlord has enabled for that property.\n\nCaretakers cannot perform owner only actions such as listing new vacancies unless they also hold an owner role.",
+      },
+      {
+        q: "5. Can I update my caretaker profile later?",
+        a: "Yes. Return to More → Caretaker program to update your location, service fee, or bio. Your caretaker ID stays the same and can be shared with landlords who want to find you on the platform.",
+      },
+    ],
+  },
+  {
+    title: "Tenants and Enquiries",
+    items: [
+      {
+        q: "1. How do I find properties to rent?",
+        a: "Use the Find tab to browse available vacancies near you. Allow location access for nearby results, or browse the full list.\n\nTap a listing to view photos, pricing, amenities, and nearby places before making an enquiry.",
+      },
+      {
+        q: "2. How do I send an enquiry on a vacancy?",
+        a: "Open a vacancy on the Find tab and tap Make enquiries. This creates an enquiry linked to that unit and adds it to Hub → Enquiries so you can track progress.\n\nIf you already enquired on the same vacancy, the app will let you know and take you to your existing enquiry instead of creating a duplicate.",
+      },
+      {
+        q: "3. Where do I track my enquiries?",
+        a: "All enquiries live in Hub → Enquiries. Switch between All, Active, and other filters to find what you need.\n\nTenants see their outgoing enquiries; landlords and caretakers see enquiries received on their properties.",
+      },
+      {
+        q: "4. What is the commitment fee?",
+        a: "The commitment fee locks a vacancy to you while your enquiry is being processed, so other seekers cannot outbook you.\n\nIt forms part of your rent if the agreement goes through. If the agreement is not completed, the commitment fee is fully refundable. Tap the info note on the payment screen for full details.",
+      },
+      {
+        q: "5. How do I save listings for later?",
+        a: "Tap the heart icon on a vacancy in Find or on the property details screen to save it. View all saved listings under More → Saved interests.\n\nRemove a saved listing anytime by tapping the heart again or unsaving from the Saved interests screen.",
+      },
+      {
+        q: "6. How do I message about an enquiry?",
+        a: "Use the Mail tab for conversations tied to your enquiries and property activity. You can also schedule property viewings and continue discussions with landlords or caretakers from within an enquiry.",
+      },
+    ],
+  },
+  {
+    title: "Payments & Earnings",
+    items: [
+      {
+        q: "1. Where do I manage my wallet and payouts?",
+        a: "Go to More → Payout bank account to open your Wallet. Here you can see your balance, payout destination, and transaction history, and manage the bank account linked for withdrawals.",
+      },
+      {
+        q: "2. How do I add or change my payout bank?",
+        a: "From Wallet, tap to add or manage your payout bank. Choose your bank from the list, enter your account number, and confirm the account name returned by the bank lookup.\n\nYou need a verified payout bank before rental income or caretaker earnings can be paid out to you.",
+      },
+      {
+        q: "3. What is the commitment fee and when do I pay it?",
+        a: "After sending an enquiry, you may be asked to pay a commitment fee to secure the vacancy. Payment opens in a secure checkout flow inside the app.\n\nThe fee is applied toward your rent if you proceed, and is refundable if the agreement does not complete.",
+      },
+      {
+        q: "4. How do rent payments work for tenants?",
+        a: "Once your tenancy is approved, rent and related charges appear in your enquiry and tenancy flow. Follow the in app prompts to pay rent when due.\n\nYour Hub → Enquiries view shows payment status, including whether a commitment fee has been paid.",
+      },
+      {
+        q: "5. Where do landlords see property income?",
+        a: "Open a workspace and go to Transactions to review payments linked to that property. Tenant records also show rent status, commitment fees, and amounts still due.",
+      },
+    ],
+  },
+  {
+    title: "Notifications & Alerts",
+    items: [
+      {
+        q: "1. How do I turn push notifications on or off?",
+        a: "Go to More → Settings and use the Push notifications toggle. When enabled, the app registers your device for alerts about messages, property activity, and other updates.\n\nWhen disabled, your device is removed from push delivery and you will not receive remote alerts.",
+      },
+      {
+        q: "2. Why am I not receiving notifications?",
+        a: "Check three things:\n\n1. Push notifications are enabled in More → Settings\n2. Notification permission is allowed in your phone's system settings for Xelfcon\n3. You are signed in on a real device (push may not work on simulators)\n\nIf all of the above look correct, try toggling notifications off and on again.",
+      },
+      {
+        q: "3. What kinds of alerts will I receive?",
+        a: "Push notifications cover activity such as new messages in Mail, enquiry updates, property and tenancy events, and other time sensitive actions that need your attention while you are away from the app.",
+      },
+    ],
+  },
+  {
+    title: "Property Roles & Permissions",
+    items: [
+      {
+        q: "1. What roles exist in a property workspace?",
+        a: "Each workspace assigns you a role:\n\n• Owner: full control over listings, tenants, caretakers, and finances\n• Caretaker: day to day management tools for an assigned property\n• Tenant: access to your tenancy, repairs, and rent related actions\n\nYour role is shown on the workspace card in Hub.",
+      },
+      {
+        q: "2. What can a property owner do?",
+        a: "Owners can create and edit vacancies, review enquiries, hire caretakers, manage tenants, view transactions, and send messages to tenants. Owners see the full workspace dashboard.",
+      },
+      {
+        q: "3. What can a caretaker see and do?",
+        a: "Caretakers invited to a property can handle maintenance requests, view tenant records, access transactions, and message tenants, but they do not get owner only tools such as listing new vacancies unless they are also the owner.",
+      },
+      {
+        q: "4. What can a tenant see in a workspace?",
+        a: "Tenants see tenancy focused options such as their unit details, repair requests, rent information, and ways to contact the landlord. Management tools like listing vacancies or hiring caretakers are hidden for tenant roles.",
+      },
+      {
+        q: "5. How do I switch between properties?",
+        a: "Go to Hub → Workspace and tap the property card you want to manage. The app remembers your active property and opens the dashboard with the correct role and permissions for that workspace.",
+      },
+    ],
+  },
+  {
+    title: "General Use & Troubleshooting",
+    items: [
+      {
+        q: "1. What are the main sections of the app?",
+        a: "The bottom navigation has five tabs:\n\n• Find: browse and enquire on vacancies\n• Hub: track enquiries and manage property workspaces\n• Assistant: chat with the Xelfcon assistant for help finding homes\n• Mail: conversations and messages\n• More: account, verification, wallet, settings, and support",
+      },
+      {
+        q: "2. How do I update my profile or password?",
+        a: "Go to More → Account to view and edit your profile details.\n\nTo change your password, open More → Settings → Update password. You must be signed in to update it.",
+      },
+      {
+        q: "3. The app asks for location access. Why?",
+        a: "Location is used to show properties near you on Find, autofill addresses when setting up a workspace or caretaker profile, and improve search results. You can deny permission and still browse listings, but nearby sorting and address autofill may be limited.",
+      },
+      {
+        q: "4. I cannot create a workspace. What should I check?",
+        a: 'Common reasons:\n\n• Identity verification is not yet approved: complete More → Verification and wait for review\n• The property address is not pinned: select an address from suggestions or tap "Use my current location"\n• Required fields are missing: workspace name, address, electricity rating, and drainage rating are all required',
+      },
+      {
+        q: "5. How do I get help if my question is not answered here?",
+        a: "Go to More → Support. Tap Contact support to email support@xelfcon.com, or browse the other FAQ topics for guides on accounts, properties, payments, and more.",
+      },
+    ],
+  },
+];
+
 const SOCIAL_HANDLE = "Xelfcon";
 
 const SOCIAL_LINKS = {
@@ -320,8 +544,15 @@ function DropletPanel() {
   );
 }
 
-function Faq({ items }: { items: FaqItem[] }) {
+function Faq({ categories }: { categories: FaqCategory[] }) {
+  const [activeCategory, setActiveCategory] = useState(0);
   const [openIndex, setOpenIndex] = useState<number>(0);
+
+  const items = categories[activeCategory]?.items ?? [];
+
+  useEffect(() => {
+    setOpenIndex(0);
+  }, [activeCategory]);
 
   return (
     <div className="grid gap-8 md:grid-cols-[1fr_1.2fr] md:gap-10">
@@ -331,48 +562,61 @@ function Faq({ items }: { items: FaqItem[] }) {
         <p className="mt-4 max-w-[340px] text-sm leading-7 text-white/70">
           Common questions about listing, renting, managing, or earning on Xelfcon.
         </p>
-
-        <div className="mt-6 max-w-[320px]">
-          <div className="relative h-[180px] w-full">
-            <div className="absolute -left-2 top-4 h-[160px] w-[200px] -rotate-6 rounded-3xl bg-white/5 ring-1 ring-white/10 shadow-soft" />
-            <div className="absolute left-6 top-8 h-[140px] w-[240px] rotate-10 rounded-3xl bg-(--brand)/20 ring-1 ring-white/10 shadow-soft" />
-            <div className="absolute left-3 top-10 grid h-[140px] w-[240px] place-items-center rounded-3xl bg-white/10 ring-1 ring-white/10 shadow-soft">
-              <span className="text-4xl">📣</span>
-            </div>
-          </div>
-        </div>
       </Reveal>
 
-      <div className="space-y-3">
-        {items.map((it, idx) => {
-          const isOpen = idx === openIndex;
-          return (
-            <Reveal key={it.q} variant="fade-up" delay={idx * 60}>
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/4 shadow-soft backdrop-blur transition-colors duration-300 hover:border-white/20">
-                <button
-                  type="button"
-                  className={[
-                    "flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-colors",
-                    isOpen ? "bg-(--brand)/20" : "hover:bg-white/5",
-                  ].join(" ")}
-                  onClick={() => setOpenIndex(isOpen ? -1 : idx)}
-                  aria-expanded={isOpen}
-                >
-                  <span className="text-sm font-medium text-white/90">{it.q}</span>
-                  <span className={`text-white/70 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}>
-                    ▾
-                  </span>
-                </button>
+      <div className="space-y-4">
+        <div className="-mx-1 flex gap-2 overflow-x-auto pb-1">
+          {categories.map((cat, idx) => {
+            const isActive = idx === activeCategory;
+            return (
+              <button
+                key={cat.title}
+                type="button"
+                className={[
+                  "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                  isActive
+                    ? "text-white font-semibold"
+                    : "text-white/50 hover:text-white/80",
+                ].join(" ")}
+                onClick={() => setActiveCategory(idx)}
+                aria-pressed={isActive}
+              >
+                {cat.title}
+              </button>
+            );
+          })}
+        </div>
 
-                <div className={`faq-answer ${isOpen ? "faq-answer-open" : ""}`}>
-                  <div className="faq-answer-inner">
-                    <div className="px-4 pb-4 pt-3 text-sm leading-6 text-white/70">{it.a}</div>
+        <div>
+          {items.map((it, idx) => {
+            const isOpen = idx === openIndex;
+            return (
+              <Reveal key={it.q} variant="fade-up" delay={idx * 60}>
+                <div className="border-b border-white/10 last:border-b-0">
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-between gap-4 py-4 text-left transition-colors hover:text-white"
+                    onClick={() => setOpenIndex(isOpen ? -1 : idx)}
+                    aria-expanded={isOpen}
+                  >
+                    <span className={`text-sm font-medium transition-colors ${isOpen ? "text-white" : "text-white/85"}`}>
+                      {it.q}
+                    </span>
+                    <span className={`shrink-0 text-white/50 transition-transform duration-300 ${isOpen ? "rotate-180 text-white/70" : ""}`}>
+                      ▾
+                    </span>
+                  </button>
+
+                  <div className={`faq-answer ${isOpen ? "faq-answer-open" : ""}`}>
+                    <div className="faq-answer-inner">
+                      <div className="whitespace-pre-line pb-4 text-sm leading-6 text-white/60">{it.a}</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Reveal>
-          );
-        })}
+              </Reveal>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -398,32 +642,6 @@ export default function Page() {
         body:
           "Caretakers get paid each month to look after a property an owner assigns them. That might mean weekly checks, answering tenant messages, flagging problems, and making sure repairs actually get done.",
         align: "left",
-      },
-    ],
-    []
-  );
-
-  const faqItems = useMemo<FaqItem[]>(
-    () => [
-      {
-        q: "What can I do on the Xelfcon app as a property owner?",
-        a: "List your property, keep tenant details in one place, and assign a caretaker for complaints, checks, and repairs. You do not have to be on site for everything.",
-      },
-      {
-        q: "What kind of spaces can renters find on Xelfcon?",
-        a: "Rooms, apartments, condos, and houses from landlords on the app. Residential rentals only, the kind you move into and live in.",
-      },
-      {
-        q: "How do I earn money through the caretaker program?",
-        a: "Once you are approved and assigned to a property, you get paid monthly for the tasks you agreed to, like checks, reporting issues, and lining up repairs.",
-      },
-      {
-        q: "As a caretaker do I have to work every day?",
-        a: "No. Most work is on a set schedule, like a weekly check, plus jumping in when something comes up. The owner and you agree on what that looks like.",
-      },
-      {
-        q: "Can I list more than one property on Xelfcon?",
-        a: "Yes. Add as many properties as your plan allows. Each one may need to pass verification before it goes live.",
       },
     ],
     []
@@ -541,7 +759,7 @@ export default function Page() {
       {/* FAQ */}
       <section id="faq" className="mt-18 pb-16 md:mt-24">
         <Reveal className="container-page">
-          <Faq items={faqItems} />
+          <Faq categories={FAQ_CATEGORIES} />
         </Reveal>
       </section>
 
