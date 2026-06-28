@@ -11,6 +11,7 @@ import {
   useGetUnitCategoriesQuery,
   useRemoveAdminDataMutation,
 } from "@/lib/api";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 type CatalogTab = {
   id: AdminDataSection;
@@ -75,7 +76,7 @@ function StringCatalogPanel({
   isBusy,
   onRetry,
   onAdd,
-  onRemove,
+  onRequestRemove,
 }: {
   items: string[];
   isLoading: boolean;
@@ -83,7 +84,7 @@ function StringCatalogPanel({
   isBusy: boolean;
   onRetry: () => void;
   onAdd: (value: string) => Promise<void>;
-  onRemove: (value: string) => Promise<void>;
+  onRequestRemove: (value: string) => void;
 }) {
   const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
@@ -165,7 +166,7 @@ function StringCatalogPanel({
                 <button
                   type="button"
                   disabled={isBusy}
-                  onClick={() => onRemove(item)}
+                  onClick={() => onRequestRemove(item)}
                   className="rounded-full p-0.5 text-cyan-100/70 transition hover:bg-white/10 hover:text-white disabled:opacity-40"
                   aria-label={`Remove ${item}`}
                 >
@@ -212,7 +213,7 @@ function BooleanCatalogPanel({
   isBusy,
   onRetry,
   onAdd,
-  onRemove,
+  onRequestRemove,
 }: {
   items: Record<string, boolean>;
   isLoading: boolean;
@@ -220,7 +221,7 @@ function BooleanCatalogPanel({
   isBusy: boolean;
   onRetry: () => void;
   onAdd: (key: string) => Promise<void>;
-  onRemove: (key: string) => Promise<void>;
+  onRequestRemove: (key: string) => void;
 }) {
   const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
@@ -309,7 +310,7 @@ function BooleanCatalogPanel({
                 <button
                   type="button"
                   disabled={isBusy}
-                  onClick={() => onRemove(key)}
+                  onClick={() => onRequestRemove(key)}
                   className="shrink-0 rounded-lg border border-rose-400/20 bg-rose-400/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-rose-100 transition hover:bg-rose-400/20 disabled:opacity-40"
                 >
                   Remove
@@ -345,6 +346,9 @@ export default function DataCatalogManager() {
   const [activeTab, setActiveTab] = useState<AdminDataSection>("unit_categories");
   const [feedback, setFeedback] = useState<{ tone: "success" | "error"; message: string } | null>(null);
   const [loadedTabs, setLoadedTabs] = useState<Set<AdminDataSection>>(() => new Set(["unit_categories"]));
+  const [pendingDelete, setPendingDelete] = useState<{ itemLabel: string; confirm: () => Promise<boolean> } | null>(
+    null,
+  );
 
   useEffect(() => {
     setLoadedTabs((current) => {
@@ -356,6 +360,7 @@ export default function DataCatalogManager() {
       next.add(activeTab);
       return next;
     });
+    setPendingDelete(null);
   }, [activeTab]);
 
   const shouldLoad = (section: AdminDataSection) => loadedTabs.has(section);
@@ -419,8 +424,10 @@ export default function DataCatalogManager() {
     try {
       await removeAdminData(body).unwrap();
       setFeedback({ tone: "success", message: successMessage });
+      return true;
     } catch {
       setFeedback({ tone: "error", message: "Unable to update catalog. Please try again." });
+      return false;
     }
   };
 
@@ -434,7 +441,7 @@ export default function DataCatalogManager() {
     value: string,
   ) => {
     const body: RemoveAdminDataRequest = { [section]: [value] };
-    await runRemove(body, `"${value}" removed from ${activeTabMeta.label.toLowerCase()}.`);
+    return runRemove(body, `"${value}" removed from ${activeTabMeta.label.toLowerCase()}.`);
   };
 
   const addBooleanItem = async (section: Extract<AdminDataSection, "services" | "amenities">, key: string) => {
@@ -444,7 +451,35 @@ export default function DataCatalogManager() {
 
   const removeBooleanItem = async (section: Extract<AdminDataSection, "services" | "amenities">, key: string) => {
     const body: RemoveAdminDataRequest = { [section]: { [key]: 1 } };
-    await runRemove(body, `"${formatLabel(key)}" removed from ${activeTabMeta.label.toLowerCase()}.`);
+    return runRemove(body, `"${formatLabel(key)}" removed from ${activeTabMeta.label.toLowerCase()}.`);
+  };
+
+  const requestRemoveStringItem = (
+    section: Extract<AdminDataSection, "unit_categories" | "rent_durations" | "features">,
+    value: string,
+  ) => {
+    setPendingDelete({
+      itemLabel: value,
+      confirm: () => removeStringItem(section, value),
+    });
+  };
+
+  const requestRemoveBooleanItem = (section: Extract<AdminDataSection, "services" | "amenities">, key: string) => {
+    setPendingDelete({
+      itemLabel: formatLabel(key),
+      confirm: () => removeBooleanItem(section, key),
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!pendingDelete) {
+      return;
+    }
+
+    const success = await pendingDelete.confirm();
+    if (success) {
+      setPendingDelete(null);
+    }
   };
 
   const sectionQueries = {
@@ -541,7 +576,7 @@ export default function DataCatalogManager() {
               isBusy={isBusy}
               onRetry={() => unitCategoriesQuery.refetch()}
               onAdd={(value) => addStringItem("unit_categories", value)}
-              onRemove={(value) => removeStringItem("unit_categories", value)}
+              onRequestRemove={(value) => requestRemoveStringItem("unit_categories", value)}
             />
           ) : null}
 
@@ -553,7 +588,7 @@ export default function DataCatalogManager() {
               isBusy={isBusy}
               onRetry={() => durationsQuery.refetch()}
               onAdd={(value) => addStringItem("rent_durations", value)}
-              onRemove={(value) => removeStringItem("rent_durations", value)}
+              onRequestRemove={(value) => requestRemoveStringItem("rent_durations", value)}
             />
           ) : null}
 
@@ -565,7 +600,7 @@ export default function DataCatalogManager() {
               isBusy={isBusy}
               onRetry={() => featuresQuery.refetch()}
               onAdd={(value) => addStringItem("features", value)}
-              onRemove={(value) => removeStringItem("features", value)}
+              onRequestRemove={(value) => requestRemoveStringItem("features", value)}
             />
           ) : null}
 
@@ -577,7 +612,7 @@ export default function DataCatalogManager() {
               isBusy={isBusy}
               onRetry={() => servicesQuery.refetch()}
               onAdd={(key) => addBooleanItem("services", key)}
-              onRemove={(key) => removeBooleanItem("services", key)}
+              onRequestRemove={(key) => requestRemoveBooleanItem("services", key)}
             />
           ) : null}
 
@@ -589,11 +624,24 @@ export default function DataCatalogManager() {
               isBusy={isBusy}
               onRetry={() => amenitiesQuery.refetch()}
               onAdd={(key) => addBooleanItem("amenities", key)}
-              onRemove={(key) => removeBooleanItem("amenities", key)}
+              onRequestRemove={(key) => requestRemoveBooleanItem("amenities", key)}
             />
           ) : null}
         </div>
       </div>
+
+      <ConfirmDeleteModal
+        open={Boolean(pendingDelete)}
+        itemLabel={pendingDelete?.itemLabel ?? ""}
+        sectionLabel={activeTabMeta.label}
+        isBusy={removeState.isLoading}
+        onCancel={() => {
+          if (!removeState.isLoading) {
+            setPendingDelete(null);
+          }
+        }}
+        onConfirm={handleConfirmDelete}
+      />
     </section>
   );
 }
