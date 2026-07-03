@@ -7,7 +7,9 @@ import type {
 } from "./user";
 import type { ConflictItem, ResolutionAction } from "./conflict";
 import type { AdminPlatformData, BooleanOptionMap } from "./admin-data";
+import type { RefundOrderDetail, RefundOrderListItem } from "./refund";
 import type { SystemInfo } from "./system";
+import type { TicketDetail, TicketLedgerRecord, TicketListItem, TicketRoomThread } from "./ticket";
 
 export type SystemUsersApiResponse = {
   success: boolean;
@@ -79,4 +81,34 @@ export type AdminStringListApiResponse = {
 export type AdminBooleanMapApiResponse = {
   success: boolean;
   data: BooleanOptionMap;
+};
+
+export type TicketsApiResponse = {
+  success: boolean;
+  data: TicketListItem[];
+};
+
+export type TicketDetailApiResponse = {
+  success: boolean;
+  data: TicketDetail;
+};
+
+export type TicketRoomMessagesApiResponse = {
+  success: boolean;
+  data: TicketRoomThread[];
+};
+
+export type TicketLedgerApiResponse = {
+  success: boolean;
+  data: TicketLedgerRecord;
+};
+
+export type RefundOrdersApiResponse = {
+  success: boolean;
+  data: RefundOrderListItem[];
+};
+
+export type RefundOrderDetailApiResponse = {
+  success: boolean;
+  data: RefundOrderDetail;
 };

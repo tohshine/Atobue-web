@@ -6,4 +6,6 @@ import "./auth";
 import "./system";
 import "./users";
 import "./conflicts";
+import "./tickets";
+import "./refunds";
 import "./admin-data";

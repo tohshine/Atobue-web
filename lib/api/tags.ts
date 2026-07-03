@@ -7,6 +7,10 @@ export const apiTags = {
   system: "System",
   conflict: "Conflict",
   conflicts: "Conflicts",
+  ticket: "Ticket",
+  tickets: "Tickets",
+  refund: "Refund",
+  refunds: "Refunds",
   adminData: "AdminData",
 } as const;
 

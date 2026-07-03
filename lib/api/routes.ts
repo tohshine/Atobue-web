@@ -21,6 +21,16 @@ export const apiRoutes = {
     list: "/api/conflicts",
     resolve: (conflictId: string) => `/api/conflicts/${conflictId}/resolve`,
   },
+  tickets: {
+    list: "/admin/tickets",
+    detail: (ticketId: string) => `/admin/tickets/${ticketId}`,
+    roomMessages: (roomId: string) => `/admin/tickets/rooms/${roomId}/messages`,
+    ledger: (ledgerId: string) => `/admin/tickets/ledger/${ledgerId}`,
+  },
+  refunds: {
+    list: "/admin/orders/refunds",
+    detail: (orderId: string) => `/admin/orders/refunds/${orderId}`,
+  },
   adminData: {
     // Public catalog reads (no /admin prefix)
     amenities: "/data/amenities",

@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: adminRoutes.users, label: "Users" },
   { href: adminRoutes.verification, label: "Verification" },
   { href: adminRoutes.conflicts, label: "Conflicts" },
+  { href: adminRoutes.tickets, label: "Tickets" },
   { href: adminRoutes.ledger, label: "Ledger" },
   { href: adminRoutes.refunds, label: "Refunds" },
   { href: adminRoutes.controls, label: "Controls" },
@@ -27,7 +28,7 @@ export default function AdminShell({
   return (
     <main className="min-h-screen bg-[linear-gradient(170deg,#040a14_0%,#0c1830_45%,#091328_100%)] pb-10">
       <header className="sticky top-0 z-40 border-b border-white/10 bg-black/45 backdrop-blur-xl">
-        <div className="container-page flex flex-wrap items-center justify-between gap-3 py-4">
+        <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-3 px-5 py-4">
           <div>
             <p className="text-xs uppercase tracking-wide text-white/60">Xelfon Admin</p>
             <h1 className="text-xl font-semibold md:text-2xl">{title}</h1>
@@ -35,7 +36,7 @@ export default function AdminShell({
           </div>
 
           <div className="flex items-center gap-2">
-            <nav className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1">
+            <nav className="flex flex-wrap items-center gap-1 rounded-3xl border border-white/10 bg-white/5 p-1">
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.href}
@@ -54,7 +55,7 @@ export default function AdminShell({
         </div>
       </header>
 
-      <section className="container-page mt-6">{children}</section>
+      <section className="mx-auto mt-6 w-full max-w-[1440px] px-5">{children}</section>
     </main>
   );
 }

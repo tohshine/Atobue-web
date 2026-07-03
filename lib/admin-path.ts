@@ -8,6 +8,7 @@ export const adminRoutes = {
   users: `${ADMIN_BASE_PATH}/users`,
   verification: `${ADMIN_BASE_PATH}/verification`,
   conflicts: `${ADMIN_BASE_PATH}/conflicts`,
+  tickets: `${ADMIN_BASE_PATH}/tickets`,
   ledger: `${ADMIN_BASE_PATH}/ledger`,
   refunds: `${ADMIN_BASE_PATH}/refunds`,
   controls: `${ADMIN_BASE_PATH}/controls`,
@@ -15,7 +16,7 @@ export const adminRoutes = {
 
 export function adminLedgerUrl(userId?: string, transactionId?: string) {
   const params = new URLSearchParams();
-  if (userId) params.set("userId", userId);
+  if (userId) params.set("ledgerId", userId);
   if (transactionId) params.set("transactionId", transactionId);
   const query = params.toString();
   if (!query) return adminRoutes.ledger;
