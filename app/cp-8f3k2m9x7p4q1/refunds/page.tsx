@@ -348,7 +348,7 @@ export default function AdminRefundsPage() {
       ? filteredRefunds.some((refund) => refund._id === manualSelectedId)
       : false;
 
-    return hasManualSelection ? manualSelectedId : filteredRefunds[0]._id;
+    return hasManualSelection && manualSelectedId ? manualSelectedId : filteredRefunds[0]._id;
   }, [filteredRefunds, manualSelectedId]);
 
   const {
