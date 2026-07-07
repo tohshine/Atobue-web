@@ -1,25 +1,35 @@
 import type {
+  SystemUser,
   SystemUsersApiResponse,
   UpdateUserVerificationRequest,
   UpdateUserVerificationResponse,
-  UsersResponse,
 } from "@/lib/types";
 import { baseApi } from "./base";
 import { apiRoutes } from "./routes";
 import { apiTags } from "./tags";
 
+function normalizeUsersResponse(response: unknown): SystemUser[] {
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  if (typeof response === "object" && response !== null && "data" in response) {
+    const data = (response as SystemUsersApiResponse).data;
+    return Array.isArray(data) ? data : [];
+  }
+
+  return [];
+}
+
 export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getUsers: builder.query<UsersResponse, void>({
+    getUsers: builder.query<SystemUser[], void>({
       query: () => apiRoutes.users.list,
-      transformResponse: (response: SystemUsersApiResponse): UsersResponse => ({
-        users: response.data,
-        total: response.data.length,
-      }),
+      transformResponse: normalizeUsersResponse,
       providesTags: (result) =>
         result
           ? [
-              ...result.users.map(({ user_info }) => ({
+              ...result.map(({ user_info }) => ({
                 type: apiTags.user,
                 id: user_info._id,
               })),

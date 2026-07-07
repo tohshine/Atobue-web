@@ -25,8 +25,25 @@ function formatCashAmount(value: string, currency = "NGN") {
   }).format(amount);
 }
 
-function getInitials(firstName: string, lastName: string) {
-  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+function getInitials(
+  firstName?: string | null,
+  lastName?: string | null,
+  fallback = "",
+) {
+  const first = firstName?.charAt(0) ?? "";
+  const last = lastName?.charAt(0) ?? "";
+  const initials = `${first}${last}`.trim();
+  if (initials) return initials.toUpperCase();
+
+  const parts = fallback.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return `${parts[0].charAt(0)}${parts.at(-1)!.charAt(0)}`.toUpperCase();
+  }
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+
+  return "?";
 }
 
 function parseCash(value: string) {
@@ -37,7 +54,7 @@ function UserAvatar({ user }: { user: SystemUser }) {
   const { first_name, last_name } = user.user_info;
   return (
     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-(--brand)/30 to-cyan-400/20 text-sm font-semibold text-cyan-100 ring-2 ring-white/10">
-      {getInitials(first_name, last_name)}
+      {getInitials(first_name, last_name, user.user_info.fullname)}
     </div>
   );
 }
@@ -142,7 +159,7 @@ function UserDetailPanel({ user }: { user: SystemUser }) {
       <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
         <div className="flex items-start gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-(--brand)/25 to-cyan-500/15 text-lg font-semibold text-cyan-100">
-            {getInitials(user_info.first_name, user_info.last_name)}
+            {getInitials(user_info.first_name, user_info.last_name, user_info.fullname)}
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-xs uppercase tracking-wide text-white/50">Account Holder</p>
@@ -222,7 +239,7 @@ function UserDetailPanel({ user }: { user: SystemUser }) {
         href={adminLedgerUrl(user_info._id)}
         className="inline-flex w-full items-center justify-center rounded-xl border border-(--brand)/35 bg-(--brand)/10 px-4 py-3 text-sm font-medium text-cyan-100 transition hover:bg-(--brand)/20"
       >
-        View Ledger for {user_info.first_name}
+        View Ledger for {user_info.first_name ?? user_info.fullname}
       </Link>
     </div>
   );
@@ -230,7 +247,7 @@ function UserDetailPanel({ user }: { user: SystemUser }) {
 
 export default function AdminUsersPage() {
   const { data, isLoading, error: fetchError } = useGetUsersQuery();
-  const users = data?.users ?? [];
+  const users = data ?? [];
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const error = fetchError ? "Failed to load users." : null;
@@ -253,8 +270,8 @@ export default function AdminUsersPage() {
         user_info.fullname.toLowerCase().includes(searchText) ||
         user_info.email.toLowerCase().includes(searchText) ||
         user_info._id.toLowerCase().includes(searchText) ||
-        user_info.first_name.toLowerCase().includes(searchText) ||
-        user_info.last_name.toLowerCase().includes(searchText)
+        (user_info.first_name ?? "").toLowerCase().includes(searchText) ||
+        (user_info.last_name ?? "").toLowerCase().includes(searchText)
       );
     });
   }, [users, query]);

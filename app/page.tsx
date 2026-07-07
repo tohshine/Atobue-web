@@ -371,16 +371,16 @@ function PhoneStack({
 }) {
   const isLeft = side === "left";
   return (
-    <div className="relative mx-auto h-[460px] w-full max-w-[300px] md:mx-0 md:h-[520px] md:max-w-[340px]">
+    <div className="relative mx-auto h-[460px] w-full max-w-[320px] overflow-visible md:mx-0 md:h-[520px] md:max-w-[380px]">
       <div
         className={[
-          "animate-phone-back absolute top-14 z-10 h-[360px] w-[180px] md:top-16 md:h-[400px] md:w-[200px]",
-          isLeft 
-            ? "left-[calc(50%-100px)] md:left-0" 
-            : "left-[calc(50%-80px)] md:left-auto md:right-0",
+          "animate-phone-back absolute top-10 z-10 h-[390px] w-[195px] md:top-12 md:h-[430px] md:w-[215px]",
+          isLeft
+            ? "left-[calc(50%-138px)] md:left-[-12px]"
+            : "left-[calc(50%-52px)] md:left-auto md:right-[-12px]",
         ].join(" ")}
       >
-        <div className="h-full w-full rotate-[-4deg] overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-soft">
+        <div className="h-full w-full rotate-[-6deg] overflow-hidden rounded-2xl ring-1 ring-white/30 shadow-[0_12px_40px_rgba(45,179,255,0.18)]">
           <Image
             src={backImage}
             alt="Phone mockup"
@@ -393,9 +393,9 @@ function PhoneStack({
       <div
         className={[
           "animate-phone-front absolute top-3 z-20 h-[390px] w-[195px] md:top-4 md:h-[430px] md:w-[215px]",
-          isLeft 
-            ? "left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0" 
-            : "left-1/2 -translate-x-1/2 md:right-12 md:translate-x-0",
+          isLeft
+            ? "left-1/2 -translate-x-1/2 md:left-24 md:translate-x-0"
+            : "left-1/2 -translate-x-1/2 md:right-24 md:left-auto md:translate-x-0",
         ].join(" ")}
       >
         <div className="h-full w-full rotate-3 overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-soft">
@@ -690,7 +690,7 @@ export default function Page() {
         </div>
         {/* Vignette tuned to page gradient tones */}
         <div
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_90%_85%_at_50%_42%,rgba(77,173,255,0.06)_0%,rgba(16,37,72,0.35)_50%,rgba(7,17,32,0.72)_100%)]"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_90%_85%_at_50%_42%,rgba(77,173,255,0.1)_0%,rgba(16,37,72,0.28)_50%,rgba(7,17,32,0.58)_100%)]"
           aria-hidden="true"
         />
         

@@ -67,7 +67,6 @@ export type {
   UpdateUserVerificationResponse,
   SystemInfoApiResponse,
   SystemUsersApiResponse,
-  UsersResponse,
   VerificationsApiResponse,
   VerificationDetailApiResponse,
   VerificationUsersResponse,

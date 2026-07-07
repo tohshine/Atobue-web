@@ -165,15 +165,15 @@ body {
   }
 
   .hero-mark-blend {
-    opacity: 0.42;
-    mix-blend-mode: soft-light;
-    mask-image: radial-gradient(ellipse 72% 68% at 50% 48%, black 18%, transparent 72%);
-    -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 48%, black 18%, transparent 72%);
+    opacity: 0.62;
+    mix-blend-mode: screen;
+    mask-image: radial-gradient(ellipse 80% 74% at 50% 48%, black 32%, transparent 84%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 74% at 50% 48%, black 32%, transparent 84%);
   }
 
   @media (min-width: 768px) {
     .hero-mark-blend {
-      opacity: 0.52;
+      opacity: 0.72;
     }
   }
 

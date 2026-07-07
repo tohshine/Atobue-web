@@ -16,11 +16,6 @@ export type SystemUsersApiResponse = {
   data: SystemUser[];
 };
 
-export type UsersResponse = {
-  users: SystemUser[];
-  total: number;
-};
-
 export type VerificationUsersResponse = {
   verifications: UserVerificationRecord[];
   total: number;
