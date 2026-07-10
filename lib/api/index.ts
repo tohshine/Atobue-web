@@ -12,6 +12,7 @@ export {
   useGetSystemInfoQuery,
   useGetVerificationsQuery,
   useGetVerificationDetailQuery,
+  useUpdateVerificationMutation,
 } from "./system";
 export {
   usersApi,

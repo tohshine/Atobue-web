@@ -8,6 +8,7 @@ export type {
   UserVerificationDetail,
   UserVerificationRecord,
   UserVerificationStatus,
+  VerificationAction,
   VerificationUserInfo,
 } from "./user";
 export type {
@@ -65,6 +66,9 @@ export type {
   ResolveConflictResponse,
   UpdateUserVerificationRequest,
   UpdateUserVerificationResponse,
+  UpdateVerificationApiResponse,
+  UpdateVerificationRequest,
+  UpdateVerificationResponse,
   SystemInfoApiResponse,
   SystemUsersApiResponse,
   VerificationsApiResponse,

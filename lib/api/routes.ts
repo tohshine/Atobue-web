@@ -34,6 +34,7 @@ export const apiRoutes = {
   adminData: {
     // Public catalog reads (no /admin prefix)
     amenities: "/data/amenities",
+    features: "/data/features",
     unitCategories: "/data/unit-categories",
     durations: "/data/durations",
     services: "/data/services",

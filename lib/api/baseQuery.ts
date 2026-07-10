@@ -26,7 +26,7 @@ export const baseQueryWithErrorHandling: BaseQueryFn<
   string | AxiosBaseQueryArgs,
   unknown,
   ApiError
-> = async (args) => {
+> = async (args, api) => {
   const { url, method = "GET", body, params } = normalizeArgs(args);
 
   try {
@@ -35,11 +35,16 @@ export const baseQueryWithErrorHandling: BaseQueryFn<
       method,
       data: body,
       params,
+      signal: api.signal,
     });
 
     return { data: result.data };
   } catch (error) {
     const axiosError = error as AxiosError;
+
+    if (axiosError.code === "ERR_CANCELED" || axiosError.name === "CanceledError") {
+      throw error;
+    }
 
     return {
       error: {

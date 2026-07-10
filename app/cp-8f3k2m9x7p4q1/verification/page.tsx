@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { adminRoutes } from "@/lib/admin-path";
-import { useGetVerificationDetailQuery, useGetVerificationsQuery } from "@/lib/api";
-import type { DocsVerificationStatus, UserVerificationRecord } from "@/lib/types";
+import { useGetVerificationDetailQuery, useGetVerificationsQuery, useUpdateVerificationMutation } from "@/lib/api";
+import type { DocsVerificationStatus, UserVerificationRecord, VerificationAction } from "@/lib/types";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 
@@ -22,6 +22,18 @@ function prettyFileType(fileType: string) {
 
 function statusLabel(status: DocsVerificationStatus) {
   return status.replace("_", " ");
+}
+
+function adminActionLabel(action: string | null | undefined) {
+  if (!action) {
+    return "None";
+  }
+
+  return action.replace(/_/g, " ");
+}
+
+function canReviewVerification(status: DocsVerificationStatus) {
+  return status === "pending";
 }
 
 function statusPill(status: DocsVerificationStatus) {
@@ -152,8 +164,27 @@ function VerificationDetailPanel({ record }: { record: UserVerificationRecord })
     refetch,
     isFetching,
   } = useGetVerificationDetailQuery(record._id);
+  const [updateVerification, { isLoading: isUpdating, reset }] = useUpdateVerificationMutation();
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const status = detail?.docs_verification_status ?? record.docs_verification_status;
+  const adminAction = detail?.admin_action ?? null;
+  const showReviewActions = canReviewVerification(status);
+
+  const applyVerificationAction = async (action: VerificationAction) => {
+    reset();
+    setActionError(null);
+
+    try {
+      await updateVerification({ docsId: record._id, action }).unwrap();
+    } catch (error) {
+      const message =
+        error && typeof error === "object" && "message" in error
+          ? String(error.message)
+          : "Unable to update verification status. Please try again.";
+      setActionError(message);
+    }
+  };
 
   return (
     <div className="mt-5 space-y-5">
@@ -235,11 +266,45 @@ function VerificationDetailPanel({ record }: { record: UserVerificationRecord })
         <p className="mt-4 text-sm leading-relaxed text-white/65">
           {status === "accepted"
             ? "This document has been reviewed and accepted. The user identity check is complete."
-            : status === "pending"
-              ? "This submission is awaiting review by the verification team."
-              : "This document was not approved. The user may need to resubmit corrected documentation."}
+            : status === "pending" && adminAction === "on_hold"
+              ? "This submission is on hold pending further review by the verification team."
+              : status === "pending"
+                ? "This submission is awaiting review by the verification team."
+                : "This document was not approved. The user may need to resubmit corrected documentation."}
         </p>
       </div>
+
+      {showReviewActions ? (
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <h3 className="text-sm font-semibold text-white/95">Review Actions</h3>
+          <p className="mt-1 text-xs text-white/55">
+            Approve the submission or place it on hold for additional review.
+          </p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={() => applyVerificationAction("accept")}
+              disabled={isUpdating}
+              className="rounded-xl border border-emerald-300/35 bg-emerald-400/10 px-3 py-2.5 text-sm font-medium text-emerald-100 transition hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isUpdating ? "Processing…" : "Approve"}
+            </button>
+            <button
+              type="button"
+              onClick={() => applyVerificationAction("hold")}
+              disabled={isUpdating}
+              className="rounded-xl border border-amber-300/35 bg-amber-400/10 px-3 py-2.5 text-sm font-medium text-amber-100 transition hover:bg-amber-400/20 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isUpdating ? "Processing…" : adminAction === "on_hold" ? "Keep on Hold" : "Place on Hold"}
+            </button>
+          </div>
+          {actionError ? (
+            <p className="mt-3 rounded-xl border border-rose-300/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-100">
+              {actionError}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
       <dl className="space-y-3">
         <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
@@ -259,7 +324,7 @@ function VerificationDetailPanel({ record }: { record: UserVerificationRecord })
         <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
           <dt className="text-xs uppercase tracking-wide text-white/45">Admin Action</dt>
           <dd className="text-sm capitalize text-white/85">
-            {detail?.admin_action ?? "None"}
+            {adminActionLabel(adminAction)}
           </dd>
         </div>
       </dl>

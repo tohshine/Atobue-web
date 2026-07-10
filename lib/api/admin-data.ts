@@ -119,9 +119,8 @@ export const adminDataApi = baseApi.injectEndpoints({
       providesTags: [{ type: apiTags.adminData, id: "DURATIONS" }],
     }),
     getFeatures: builder.query<string[], void>({
-      // No dedicated features route on the backend — read from the platform catalog document.
-      query: () => apiRoutes.adminData.unitCategories,
-      transformResponse: (response) => extractStringSection(response, "features", false),
+      query: () => apiRoutes.adminData.features,
+      transformResponse: (response) => extractStringSection(response, "features"),
       providesTags: [{ type: apiTags.adminData, id: "FEATURES" }],
     }),
     getServices: builder.query<BooleanOptionMap, void>({

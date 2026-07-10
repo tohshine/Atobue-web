@@ -2,6 +2,8 @@ export type UserVerificationStatus = "pending" | "approved" | "denied";
 
 export type DocsVerificationStatus = "accepted" | "pending" | "rejected" | "denied";
 
+export type VerificationAction = "hold" | "accept";
+
 export type VerificationUserInfo = {
   first_name: string;
   last_name: string;

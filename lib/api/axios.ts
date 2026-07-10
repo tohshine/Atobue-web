@@ -52,17 +52,70 @@ function applyAuthHeaders(config: RetryableRequestConfig, token: string | null):
   return config;
 }
 
+function isCancelledRequest(error: AxiosError): boolean {
+  return error.code === "ERR_CANCELED" || error.name === "CanceledError";
+}
+
+function summarizeErrorData(data: unknown): string {
+  if (data == null) {
+    return "";
+  }
+
+  if (typeof data === "string") {
+    return data.trim();
+  }
+
+  try {
+    const serialized = JSON.stringify(data);
+    return serialized === "{}" ? "" : serialized;
+  } catch {
+    return "";
+  }
+}
+
 export function getAxiosErrorMessage(error: AxiosError): string {
+  if (isCancelledRequest(error)) {
+    return "Request cancelled.";
+  }
+
   if (!error.response) {
-    return "Network error. Check your connection.";
+    return error.message || "Network error. Check your connection.";
   }
 
-  const data = error.response.data;
-  if (typeof data === "object" && data !== null && "message" in data) {
-    return String((data as { message: string }).message);
+  const { data, status } = error.response;
+
+  if (typeof data === "string" && data.trim()) {
+    return data.trim();
   }
 
-  return `Request failed (${error.response.status})`;
+  if (typeof data === "object" && data !== null) {
+    const record = data as Record<string, unknown>;
+    if (typeof record.message === "string" && record.message.trim()) {
+      return record.message;
+    }
+    if (typeof record.error === "string" && record.error.trim()) {
+      return record.error;
+    }
+    if (Array.isArray(record.errors) && record.errors.length > 0) {
+      return record.errors.map(String).join(", ");
+    }
+  }
+
+  return `Request failed (${status})`;
+}
+
+function logApiError(error: AxiosError): void {
+  if (process.env.NODE_ENV !== "development" || isCancelledRequest(error)) {
+    return;
+  }
+
+  const request = getRequestLabel(error.config);
+  const status = error.response?.status ?? "FETCH_ERROR";
+  const message = getAxiosErrorMessage(error);
+  const dataSummary = summarizeErrorData(error.response?.data);
+  const suffix = dataSummary ? ` — ${dataSummary}` : "";
+
+  console.warn(`[API] ${request} failed (${status}): ${message}${suffix}`);
 }
 
 apiClient.interceptors.request.use(
@@ -127,14 +180,7 @@ apiClient.interceptors.response.use(
       }
     }
 
-    if (process.env.NODE_ENV === "development") {
-      console.error("[API Error]", {
-        request: getRequestLabel(error.config),
-        status: error.response?.status ?? "FETCH_ERROR",
-        message: getAxiosErrorMessage(error),
-        data: error.response?.data,
-      });
-    }
+    logApiError(error);
 
     return Promise.reject(error);
   },

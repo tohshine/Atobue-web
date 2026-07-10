@@ -3,12 +3,26 @@
 import { useEffect, useState } from "react";
 import { adminRoutes } from "@/lib/admin-path";
 import { useGetSystemInfoQuery } from "@/lib/api";
+import type { SystemCashMetrics, SystemUserMetrics } from "@/lib/types";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import { formatCurrency, prettyDate } from "../_lib/data";
 import { getBalanceHidden, setBalanceHidden } from "../_lib/storage";
 
 const HIDDEN_BALANCE = "••••••";
+
+const EMPTY_CASH: SystemCashMetrics = {
+  completed_inflow: 0,
+  completed_outflow: 0,
+  net_cashflow: 0,
+  pending_refund_exposure: 0,
+  account_balance: 0,
+};
+
+const EMPTY_USERS: SystemUserMetrics = {
+  total_users: 0,
+  active_users: 0,
+};
 
 function formatBalance(amount: number, hidden: boolean) {
   return hidden ? HIDDEN_BALANCE : formatCurrency(amount);
@@ -217,13 +231,13 @@ export default function AdminOverviewPage() {
     });
   };
 
-  const cash = system?.cash;
-  const users = system?.users;
-  const netCashflow = cash?.net_cashflow ?? 0;
-  const activeRatio =
-    users && users.total_users > 0
-      ? Math.round((users.active_users / users.total_users) * 100)
-      : 0;
+  const cash = system?.cash ?? EMPTY_CASH;
+  const users = system?.users ?? EMPTY_USERS;
+  const netCashflow = cash.net_cashflow;
+  const totalUsers = users.total_users;
+  const activeUsers = users.active_users;
+  const inactiveUsers = Math.max(totalUsers - activeUsers, 0);
+  const activeRatio = totalUsers > 0 ? Math.round((activeUsers / totalUsers) * 100) : 0;
 
   return (
     <AdminGuard>
@@ -234,7 +248,7 @@ export default function AdminOverviewPage() {
       >
         {isLoading ? (
           <OverviewSkeleton />
-        ) : isError || !system || !cash || !users ? (
+        ) : isError || !system ? (
           <div className="rounded-2xl border border-rose-400/20 bg-rose-400/10 p-8 text-center">
             <p className="text-sm font-medium text-rose-100">Unable to load system information.</p>
             <button
@@ -318,16 +332,21 @@ export default function AdminOverviewPage() {
                   description="Registered accounts and current activity"
                 />
                 <div className="mt-8 grid gap-6 sm:grid-cols-[auto_1fr] sm:items-center">
-                  <ActiveUserRing active={users.active_users} total={users.total_users} />
+                  <ActiveUserRing active={activeUsers} total={totalUsers} />
                   <div className="space-y-4">
                     <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                       <p className="text-[11px] uppercase tracking-wide text-white/45">Total Users</p>
-                      <p className="mt-1 text-2xl font-semibold text-white">{users.total_users}</p>
+                      <p className="mt-1 text-2xl font-semibold text-white">{totalUsers}</p>
                     </div>
                     <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                       <p className="text-[11px] uppercase tracking-wide text-white/45">Active Users</p>
-                      <p className="mt-1 text-2xl font-semibold text-cyan-200">{users.active_users}</p>
+                      <p className="mt-1 text-2xl font-semibold text-cyan-200">{activeUsers}</p>
                       <p className="mt-1 text-xs text-white/45">{activeRatio}% of total base</p>
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                      <p className="text-[11px] uppercase tracking-wide text-white/45">Inactive Users</p>
+                      <p className="mt-1 text-2xl font-semibold text-white/80">{inactiveUsers}</p>
+                      <p className="mt-1 text-xs text-white/45">No recent platform activity</p>
                     </div>
                   </div>
                 </div>
@@ -352,7 +371,11 @@ export default function AdminOverviewPage() {
                 <dl className="mt-8 space-y-4">
                   <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                     <dt className="text-xs uppercase tracking-wide text-white/45">Record ID</dt>
-                    <dd className="truncate font-mono text-xs text-white/70">{system.id}</dd>
+                    <dd className="truncate font-mono text-xs text-white/70">{system.id || system._id}</dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                    <dt className="text-xs uppercase tracking-wide text-white/45">Document Version</dt>
+                    <dd className="text-sm text-white/80">{system.__v}</dd>
                   </div>
                   <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                     <dt className="text-xs uppercase tracking-wide text-white/45">Created</dt>

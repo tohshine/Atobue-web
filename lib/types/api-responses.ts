@@ -1,9 +1,11 @@
 import type {
   AdminUser,
+  DocsVerificationStatus,
   SystemUser,
   UserVerificationDetail,
   UserVerificationRecord,
   UserVerificationStatus,
+  VerificationAction,
 } from "./user";
 import type { ConflictItem, ResolutionAction } from "./conflict";
 import type { AdminPlatformData, BooleanOptionMap } from "./admin-data";
@@ -29,6 +31,23 @@ export type VerificationsApiResponse = {
 export type VerificationDetailApiResponse = {
   success: boolean;
   data: UserVerificationDetail;
+};
+
+export type UpdateVerificationRequest = {
+  docsId: string;
+  action: VerificationAction;
+};
+
+export type UpdateVerificationResponse = {
+  _id?: string;
+  user_id?: string;
+  docs_verification_status?: DocsVerificationStatus;
+  admin_action?: string | null;
+};
+
+export type UpdateVerificationApiResponse = {
+  success: boolean;
+  data: UpdateVerificationResponse;
 };
 
 export type UpdateUserVerificationRequest = {
