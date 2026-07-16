@@ -701,8 +701,7 @@ export default function Page() {
 
 
 
-            <div className="pill mx-auto border border-white/10 bg-white/8 px-4 py-1.5 text-white/80">Xelfcon</div>
-            <h1 className="mt-5 text-3xl font-semibold leading-tight md:text-6xl">
+            <h1 className="text-3xl font-semibold leading-tight md:text-6xl">
               List, Manage, Rent <br className="hidden md:block" /> & Earn with{" "}
               <span className="text-(--brand)">Xelfcon</span>
             </h1>
