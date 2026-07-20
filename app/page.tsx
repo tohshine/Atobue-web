@@ -521,6 +521,7 @@ function FeatureRow({ item, index }: { item: Feature; index: number }) {
               <div className="mt-4">
                 <StoreButtons />
               </div>
+              
             </div>
           </Reveal>
         </div>
