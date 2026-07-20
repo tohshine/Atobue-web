@@ -9,18 +9,41 @@ import type {
   TicketsApiResponse,
 } from "@/lib/types";
 import { baseApi } from "./base";
+import {
+  normalizePaginatedList,
+  resolveListQueryParams,
+  type ListQueryParams,
+  type PaginatedList,
+} from "./pagination";
 import { apiRoutes } from "./routes";
 import { apiTags } from "./tags";
 
+function extractTickets(response: unknown): TicketListItem[] {
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  if (typeof response === "object" && response !== null && "data" in response) {
+    const data = (response as TicketsApiResponse).data;
+    return Array.isArray(data) ? data : [];
+  }
+
+  return [];
+}
+
 export const ticketsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getTickets: builder.query<TicketListItem[], void>({
-      query: () => apiRoutes.tickets.list,
-      transformResponse: (response: TicketsApiResponse) => response.data,
+    getTickets: builder.query<PaginatedList<TicketListItem>, ListQueryParams | void>({
+      query: (args) => ({
+        url: apiRoutes.tickets.list,
+        params: resolveListQueryParams(args),
+      }),
+      transformResponse: (response: unknown, _meta, arg) =>
+        normalizePaginatedList(response, resolveListQueryParams(arg), extractTickets),
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ _id }) => ({ type: apiTags.ticket, id: _id })),
+              ...result.items.map(({ _id }) => ({ type: apiTags.ticket, id: _id })),
               { type: apiTags.tickets, id: "LIST" },
             ]
           : [{ type: apiTags.tickets, id: "LIST" }],

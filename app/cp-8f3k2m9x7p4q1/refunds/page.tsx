@@ -13,6 +13,7 @@ import type {
 } from "@/lib/types";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
+import PaginationBar from "../_components/PaginationBar";
 import { formatCurrency } from "../_lib/data";
 
 function formatDateTime(value: string | null | undefined) {
@@ -304,13 +305,15 @@ function RefundDetailPanel({ refund, isRefreshing }: { refund: RefundOrderDetail
 }
 
 export default function AdminRefundsPage() {
+  const [page, setPage] = useState(1);
   const {
-    data: refunds = [],
+    data,
     isLoading,
     isError: isListError,
     refetch: refetchList,
     isFetching: isRefreshingList,
-  } = useGetRefundOrdersQuery();
+  } = useGetRefundOrdersQuery({ p: page });
+  const refunds = data?.items ?? [];
 
   const [manualSelectedId, setManualSelectedId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -361,7 +364,7 @@ export default function AdminRefundsPage() {
     skip: !selectedId,
   });
 
-  const totalRefunds = refunds.length;
+  const totalRefunds = data?.total ?? refunds.length;
   const clearedRefunds = refunds.filter((refund) => refund.status.toLowerCase() === "cleared").length;
   const pendingRefunds = refunds.filter((refund) => refund.status.toLowerCase() === "pending").length;
   const totalRefundAmount = refunds.reduce((sum, refund) => sum + refund.amount, 0);
@@ -488,6 +491,21 @@ export default function AdminRefundsPage() {
                     />
                   ))}
                 </div>
+              )}
+
+              {!isLoading && !isListError && (
+                <PaginationBar
+                  page={data?.page ?? page}
+                  pageCount={data?.pageCount ?? null}
+                  hasMore={data?.hasMore ?? false}
+                  total={data?.total ?? null}
+                  itemCount={filteredRefunds.length}
+                  onPageChange={(nextPage) => {
+                    setManualSelectedId(null);
+                    setPage(nextPage);
+                  }}
+                  disabled={isRefreshingList}
+                />
               )}
             </section>
 

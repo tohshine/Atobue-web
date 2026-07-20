@@ -5,18 +5,41 @@ import type {
   RefundOrdersApiResponse,
 } from "@/lib/types";
 import { baseApi } from "./base";
+import {
+  normalizePaginatedList,
+  resolveListQueryParams,
+  type ListQueryParams,
+  type PaginatedList,
+} from "./pagination";
 import { apiRoutes } from "./routes";
 import { apiTags } from "./tags";
 
+function extractRefundOrders(response: unknown): RefundOrderListItem[] {
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  if (typeof response === "object" && response !== null && "data" in response) {
+    const data = (response as RefundOrdersApiResponse).data;
+    return Array.isArray(data) ? data : [];
+  }
+
+  return [];
+}
+
 export const refundsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getRefundOrders: builder.query<RefundOrderListItem[], void>({
-      query: () => apiRoutes.refunds.list,
-      transformResponse: (response: RefundOrdersApiResponse) => response.data,
+    getRefundOrders: builder.query<PaginatedList<RefundOrderListItem>, ListQueryParams | void>({
+      query: (args) => ({
+        url: apiRoutes.refunds.list,
+        params: resolveListQueryParams(args),
+      }),
+      transformResponse: (response: unknown, _meta, arg) =>
+        normalizePaginatedList(response, resolveListQueryParams(arg), extractRefundOrders),
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ _id }) => ({ type: apiTags.refund, id: _id })),
+              ...result.items.map(({ _id }) => ({ type: apiTags.refund, id: _id })),
               { type: apiTags.refunds, id: "LIST" },
             ]
           : [{ type: apiTags.refunds, id: "LIST" }],

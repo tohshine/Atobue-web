@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { adminLedgerUrl, adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
+import PaginationBar from "../_components/PaginationBar";
 import { useGetUsersQuery } from "@/lib/api";
 import type { SystemUser } from "@/lib/types";
 
@@ -246,11 +247,16 @@ function UserDetailPanel({ user }: { user: SystemUser }) {
 }
 
 export default function AdminUsersPage() {
-  const { data, isLoading, error: fetchError } = useGetUsersQuery();
-  const users = data ?? [];
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isFetching, error: fetchError } = useGetUsersQuery({ p: page });
+  const users = data?.items ?? [];
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const error = fetchError ? "Failed to load users." : null;
+
+  useEffect(() => {
+    setSelectedId("");
+  }, [page]);
 
   useEffect(() => {
     if (users.length > 0 && !selectedId) {
@@ -305,7 +311,7 @@ export default function AdminUsersPage() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <article className="card-soft rounded-2xl p-4">
             <p className="text-xs uppercase tracking-wide text-white/60">Total Users</p>
-            <p className="mt-2 text-2xl font-semibold">{users.length}</p>
+            <p className="mt-2 text-2xl font-semibold">{data?.total ?? users.length}</p>
           </article>
           <article className="card-soft rounded-2xl p-4">
             <p className="text-xs uppercase tracking-wide text-white/60">With Cash Activity</p>
@@ -331,7 +337,8 @@ export default function AdminUsersPage() {
               <div>
                 <h2 className="text-lg font-semibold">User Directory</h2>
                 <p className="mt-1 text-xs text-white/55">
-                  {filteredUsers.length} of {users.length} account(s)
+                  {filteredUsers.length} on this page
+                  {isFetching ? " · syncing…" : ""}
                 </p>
               </div>
               <label className="min-w-[220px] grow text-sm lg:max-w-xs">
@@ -373,6 +380,16 @@ export default function AdminUsersPage() {
                     No users match your search.
                   </div>
                 )}
+
+                <PaginationBar
+                  page={data?.page ?? page}
+                  pageCount={data?.pageCount ?? null}
+                  hasMore={data?.hasMore ?? false}
+                  total={data?.total ?? null}
+                  itemCount={filteredUsers.length}
+                  onPageChange={setPage}
+                  disabled={isFetching}
+                />
               </div>
             )}
           </section>

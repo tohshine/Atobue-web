@@ -65,6 +65,10 @@ export type ConflictsResponse = {
   open: number;
   resolved: number;
   escalated: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+  pageCount: number | null;
 };
 
 export type ResolveConflictRequest = {

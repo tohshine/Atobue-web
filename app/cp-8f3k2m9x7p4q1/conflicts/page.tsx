@@ -6,6 +6,7 @@ import { adminLedgerUrl, adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import ChatThread from "../_components/ChatThread";
+import PaginationBar from "../_components/PaginationBar";
 import { formatCurrency } from "../_lib/data";
 import {
   ConflictItem,
@@ -101,7 +102,8 @@ function getSuggestedActions(conflict: ConflictItem): ResolutionAction[] {
 }
 
 export default function AdminConflictsPage() {
-  const { data, isLoading, error: fetchError } = useGetConflictsQuery();
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isFetching, error: fetchError } = useGetConflictsQuery({ p: page });
   const [resolveConflictMutation, { isLoading: resolving, isError: resolveFailed }] =
     useResolveConflictMutation();
   const conflicts = data?.conflicts ?? [];
@@ -114,6 +116,10 @@ export default function AdminConflictsPage() {
     : resolveFailed
       ? "Failed to apply resolution."
       : null;
+
+  useEffect(() => {
+    setSelectedId("");
+  }, [page]);
 
   useEffect(() => {
     if (conflicts.length > 0 && !selectedId) {
@@ -136,8 +142,9 @@ export default function AdminConflictsPage() {
     setResolutionNotes("");
   }, [selectedConflict?.id]);
 
-  const openCount = conflicts.filter((item) => item.status === "open").length;
-  const resolvedCount = conflicts.filter((item) => item.status === "resolved").length;
+  const openCount = data?.open ?? conflicts.filter((item) => item.status === "open").length;
+  const resolvedCount =
+    data?.resolved ?? conflicts.filter((item) => item.status === "resolved").length;
   const declineCount = conflicts.filter((item) => item.ticketType === "decline").length;
   const reportCount = conflicts.filter((item) => item.ticketType === "report").length;
 
@@ -257,6 +264,16 @@ export default function AdminConflictsPage() {
                     No tickets match the selected filters.
                   </div>
                 )}
+
+                <PaginationBar
+                  page={data?.page ?? page}
+                  pageCount={data?.pageCount ?? null}
+                  hasMore={data?.hasMore ?? false}
+                  total={data?.total ?? null}
+                  itemCount={filteredConflicts.length}
+                  onPageChange={setPage}
+                  disabled={isFetching}
+                />
               </div>
             )}
           </section>

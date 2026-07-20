@@ -6,6 +6,7 @@ import { useGetVerificationDetailQuery, useGetVerificationsQuery, useUpdateVerif
 import type { DocsVerificationStatus, UserVerificationRecord, VerificationAction } from "@/lib/types";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
+import PaginationBar from "../_components/PaginationBar";
 
 type StatusFilter = "all" | DocsVerificationStatus;
 
@@ -333,11 +334,16 @@ function VerificationDetailPanel({ record }: { record: UserVerificationRecord })
 }
 
 export default function AdminVerificationPage() {
-  const { data, isLoading, isError, refetch, isFetching } = useGetVerificationsQuery();
-  const verifications = useMemo(() => data ?? [], [data]);
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isError, refetch, isFetching } = useGetVerificationsQuery({ p: page });
+  const verifications = useMemo(() => data?.items ?? [], [data]);
   const [selectedId, setSelectedId] = useState<string>("");
   const [filter, setFilter] = useState<StatusFilter>("all");
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    setSelectedId("");
+  }, [page]);
 
   useEffect(() => {
     if (verifications.length > 0 && !selectedId) {
@@ -401,7 +407,7 @@ export default function AdminVerificationPage() {
         ) : (
           <div className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCard label="Total Submissions" value={counts.total} tone="default" />
+              <StatCard label="Total Submissions" value={data?.total ?? counts.total} tone="default" />
               <StatCard label="Accepted" value={counts.accepted} tone="emerald" />
               <StatCard label="Pending Review" value={counts.pending} tone="amber" />
               <StatCard label="Rejected / Denied" value={counts.rejected} tone="rose" />
@@ -413,7 +419,7 @@ export default function AdminVerificationPage() {
                   <div>
                     <h2 className="text-lg font-semibold text-white/95">Verification Queue</h2>
                     <p className="mt-1 text-xs text-white/45">
-                      {filteredVerifications.length} record(s)
+                      {filteredVerifications.length} on this page
                       {isFetching ? " · syncing…" : ""}
                     </p>
                   </div>
@@ -477,6 +483,16 @@ export default function AdminVerificationPage() {
                       No verification records match your filters.
                     </div>
                   )}
+
+                  <PaginationBar
+                    page={data?.page ?? page}
+                    pageCount={data?.pageCount ?? null}
+                    hasMore={data?.hasMore ?? false}
+                    total={data?.total ?? null}
+                    itemCount={filteredVerifications.length}
+                    onPageChange={setPage}
+                    disabled={isFetching}
+                  />
                 </div>
               </section>
 

@@ -5,10 +5,16 @@ import type {
   UpdateUserVerificationResponse,
 } from "@/lib/types";
 import { baseApi } from "./base";
+import {
+  normalizePaginatedList,
+  resolveListQueryParams,
+  type ListQueryParams,
+  type PaginatedList,
+} from "./pagination";
 import { apiRoutes } from "./routes";
 import { apiTags } from "./tags";
 
-function normalizeUsersResponse(response: unknown): SystemUser[] {
+function extractUsers(response: unknown): SystemUser[] {
   if (Array.isArray(response)) {
     return response;
   }
@@ -23,13 +29,17 @@ function normalizeUsersResponse(response: unknown): SystemUser[] {
 
 export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getUsers: builder.query<SystemUser[], void>({
-      query: () => apiRoutes.users.list,
-      transformResponse: normalizeUsersResponse,
+    getUsers: builder.query<PaginatedList<SystemUser>, ListQueryParams | void>({
+      query: (args) => ({
+        url: apiRoutes.users.list,
+        params: resolveListQueryParams(args),
+      }),
+      transformResponse: (response: unknown, _meta, arg) =>
+        normalizePaginatedList(response, resolveListQueryParams(arg), extractUsers),
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ user_info }) => ({
+              ...result.items.map(({ user_info }) => ({
                 type: apiTags.user,
                 id: user_info._id,
               })),

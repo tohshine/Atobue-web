@@ -7,6 +7,7 @@ import { useGetTicketDetailQuery, useGetTicketRoomMessagesQuery, useGetTicketsQu
 import type { TicketDetail, TicketListItem, TicketParty, TicketRoomThread } from "@/lib/types";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
+import PaginationBar from "../_components/PaginationBar";
 import { formatCurrency } from "../_lib/data";
 
 function formatDateTime(value: string | null | undefined) {
@@ -664,13 +665,15 @@ function TicketDetailPanel({
 }
 
 export default function AdminTicketsPage() {
+  const [page, setPage] = useState(1);
   const {
-    data: tickets = [],
+    data,
     isLoading,
     isError: isListError,
     refetch: refetchList,
     isFetching: isRefreshingList,
-  } = useGetTicketsQuery();
+  } = useGetTicketsQuery({ p: page });
+  const tickets = data?.items ?? [];
 
   const [manualSelectedId, setManualSelectedId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -730,7 +733,7 @@ export default function AdminTicketsPage() {
     skip: !selectedRoomId,
   });
 
-  const totalTickets = tickets.length;
+  const totalTickets = data?.total ?? tickets.length;
   const openTickets = tickets.filter((ticket) => ticket.status.toLowerCase() === "open").length;
   const highPriorityTickets = tickets.filter(
     (ticket) => ticket.priority.toLowerCase() === "high" || ticket.priority.toLowerCase() === "urgent",
@@ -887,6 +890,21 @@ export default function AdminTicketsPage() {
                     />
                   ))}
                 </div>
+              )}
+
+              {!isLoading && !isListError && (
+                <PaginationBar
+                  page={data?.page ?? page}
+                  pageCount={data?.pageCount ?? null}
+                  hasMore={data?.hasMore ?? false}
+                  total={data?.total ?? null}
+                  itemCount={filteredTickets.length}
+                  onPageChange={(nextPage) => {
+                    setManualSelectedId(null);
+                    setPage(nextPage);
+                  }}
+                  disabled={isRefreshingList}
+                />
               )}
             </section>
 

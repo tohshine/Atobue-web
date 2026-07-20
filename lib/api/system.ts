@@ -13,6 +13,12 @@ import type {
   VerificationsApiResponse,
 } from "@/lib/types";
 import { baseApi } from "./base";
+import {
+  normalizePaginatedList,
+  resolveListQueryParams,
+  type ListQueryParams,
+  type PaginatedList,
+} from "./pagination";
 import { apiRoutes } from "./routes";
 import { apiTags } from "./tags";
 
@@ -75,7 +81,7 @@ function normalizeSystemInfoResponse(response: unknown): SystemInfo {
   };
 }
 
-function normalizeVerificationsResponse(response: unknown): UserVerificationRecord[] {
+function extractVerifications(response: unknown): UserVerificationRecord[] {
   if (Array.isArray(response)) {
     return response;
   }
@@ -137,13 +143,17 @@ export const systemApi = baseApi.injectEndpoints({
       transformResponse: normalizeSystemInfoResponse,
       providesTags: [{ type: apiTags.system, id: "INFO" }],
     }),
-    getVerifications: builder.query<UserVerificationRecord[], void>({
-      query: () => apiRoutes.system.verifications,
-      transformResponse: normalizeVerificationsResponse,
+    getVerifications: builder.query<PaginatedList<UserVerificationRecord>, ListQueryParams | void>({
+      query: (args) => ({
+        url: apiRoutes.system.verifications,
+        params: resolveListQueryParams(args),
+      }),
+      transformResponse: (response: unknown, _meta, arg) =>
+        normalizePaginatedList(response, resolveListQueryParams(arg), extractVerifications),
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ _id }) => ({ type: apiTags.user, id: _id })),
+              ...result.items.map(({ _id }) => ({ type: apiTags.user, id: _id })),
               { type: apiTags.system, id: "VERIFICATIONS" },
             ]
           : [{ type: apiTags.system, id: "VERIFICATIONS" }],
@@ -160,7 +170,7 @@ export const systemApi = baseApi.injectEndpoints({
         body: { action },
       }),
       transformResponse: normalizeUpdateVerificationResponse,
-      async onQueryStarted({ docsId, action }, { dispatch, queryFulfilled }) {
+      async onQueryStarted({ docsId }, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
 
@@ -172,28 +182,6 @@ export const systemApi = baseApi.injectEndpoints({
                 }
                 if (data.admin_action !== undefined) {
                   draft.admin_action = data.admin_action;
-                }
-              }),
-            );
-          }
-
-          if (action === "accept" && data.docs_verification_status === "accepted") {
-            dispatch(
-              systemApi.util.updateQueryData("getVerifications", undefined, (draft) => {
-                const record = draft.find((item) => item._id === docsId);
-                if (record) {
-                  record.docs_verification_status = "accepted";
-                }
-              }),
-            );
-          }
-
-          if (action === "hold") {
-            dispatch(
-              systemApi.util.updateQueryData("getVerifications", undefined, (draft) => {
-                const record = draft.find((item) => item._id === docsId);
-                if (record) {
-                  record.docs_verification_status = "pending";
                 }
               }),
             );
