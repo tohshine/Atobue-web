@@ -1,4 +1,6 @@
 import type {
+  BanUserRequest,
+  BanUserResponse,
   SystemUser,
   SystemUsersApiResponse,
   UpdateUserVerificationRequest,
@@ -62,10 +64,34 @@ export const usersApi = baseApi.injectEndpoints({
         { type: apiTags.system, id: "VERIFICATIONS" },
       ],
     }),
+    banUser: builder.mutation<BanUserResponse, BanUserRequest>({
+      query: ({ userId }) => ({
+        url: apiRoutes.users.ban(userId),
+        method: "PATCH",
+        body: { banned: true },
+      }),
+      invalidatesTags: (_result, _error, { userId }) => [
+        { type: apiTags.user, id: userId },
+        { type: apiTags.users, id: "LIST" },
+      ],
+    }),
+    unbanUser: builder.mutation<BanUserResponse, BanUserRequest>({
+      query: ({ userId }) => ({
+        url: apiRoutes.users.ban(userId),
+        method: "PATCH",
+        body: { banned: false },
+      }),
+      invalidatesTags: (_result, _error, { userId }) => [
+        { type: apiTags.user, id: userId },
+        { type: apiTags.users, id: "LIST" },
+      ],
+    }),
   }),
 });
 
 export const {
   useGetUsersQuery,
   useUpdateUserVerificationMutation,
+  useBanUserMutation,
+  useUnbanUserMutation,
 } = usersApi;

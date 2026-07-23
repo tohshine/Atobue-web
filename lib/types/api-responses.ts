@@ -59,6 +59,15 @@ export type UpdateUserVerificationResponse = {
   user: AdminUser;
 };
 
+export type BanUserRequest = {
+  userId: string;
+};
+
+export type BanUserResponse = {
+  success?: boolean;
+  message?: string;
+};
+
 export type ConflictsResponse = {
   conflicts: ConflictItem[];
   total: number;

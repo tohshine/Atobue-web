@@ -16,6 +16,7 @@ export const apiRoutes = {
     list: "/admin/system/users",
     verificationList: "/admin/system/verifications",
     verification: (userId: string) => `/api/users/${userId}/verification`,
+    ban: (userId: string) => `/admin/users/${userId}/ban`,
   },
   conflicts: {
     list: "/api/conflicts",

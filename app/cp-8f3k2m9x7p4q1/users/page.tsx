@@ -6,7 +6,7 @@ import { adminLedgerUrl, adminRoutes } from "@/lib/admin-path";
 import AdminGuard from "../_components/AdminGuard";
 import AdminShell from "../_components/AdminShell";
 import PaginationBar from "../_components/PaginationBar";
-import { useGetUsersQuery } from "@/lib/api";
+import { useGetUsersQuery, useBanUserMutation, useUnbanUserMutation } from "@/lib/api";
 import type { SystemUser } from "@/lib/types";
 
 function formatDate(dateValue: string) {
@@ -155,6 +155,46 @@ function UserDetailPanel({ user }: { user: SystemUser }) {
   const netFlow = inflow - outflow;
   const inflowShare = totalInflow > 0 ? Math.round((inflow / totalInflow) * 100) : 0;
 
+  const [banUser, { isLoading: isBanning, reset: resetBan }] = useBanUserMutation();
+  const [unbanUser, { isLoading: isUnbanning, reset: resetUnban }] = useUnbanUserMutation();
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+  const [bannedOverride, setBannedOverride] = useState<boolean | null>(null);
+
+  const isBanned = bannedOverride ?? Boolean(user_info.banned);
+  const isMutating = isBanning || isUnbanning;
+
+  useEffect(() => {
+    setBannedOverride(null);
+    setActionError(null);
+    setActionSuccess(null);
+  }, [user_info._id]);
+
+  const applyBanAction = async (action: "ban" | "unban") => {
+    resetBan();
+    resetUnban();
+    setActionError(null);
+    setActionSuccess(null);
+
+    try {
+      if (action === "ban") {
+        await banUser({ userId: user_info._id }).unwrap();
+        setBannedOverride(true);
+        setActionSuccess("User has been banned.");
+      } else {
+        await unbanUser({ userId: user_info._id }).unwrap();
+        setBannedOverride(false);
+        setActionSuccess("User has been unbanned.");
+      }
+    } catch (error) {
+      const message =
+        error && typeof error === "object" && "message" in error
+          ? String(error.message)
+          : `Unable to ${action} user. Please try again.`;
+      setActionError(message);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
@@ -173,6 +213,15 @@ function UserDetailPanel({ user }: { user: SystemUser }) {
               <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs text-white/60">
                 Member since {formatDate(user_info.createdAt)}
               </span>
+              {isBanned ? (
+                <span className="rounded-full bg-rose-400/15 px-2.5 py-1 text-xs font-medium text-rose-200">
+                  Banned
+                </span>
+              ) : (
+                <span className="rounded-full bg-emerald-400/15 px-2.5 py-1 text-xs font-medium text-emerald-200">
+                  Active
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -234,6 +283,41 @@ function UserDetailPanel({ user }: { user: SystemUser }) {
             </p>
           </div>
         </div>
+      </article>
+
+      <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <h3 className="text-base font-semibold">Account Actions</h3>
+        <p className="mt-1 text-xs text-white/55">
+          Ban or restore access for this account.
+        </p>
+        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={() => applyBanAction("ban")}
+            disabled={isMutating}
+            className="rounded-xl border border-rose-300/35 bg-rose-400/10 px-3 py-2.5 text-sm font-medium text-rose-100 transition hover:bg-rose-400/20 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isBanning ? "Banning…" : "Ban User"}
+          </button>
+          <button
+            type="button"
+            onClick={() => applyBanAction("unban")}
+            disabled={isMutating}
+            className="rounded-xl border border-emerald-300/35 bg-emerald-400/10 px-3 py-2.5 text-sm font-medium text-emerald-100 transition hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isUnbanning ? "Unbanning…" : "Unban User"}
+          </button>
+        </div>
+        {actionError ? (
+          <p className="mt-3 rounded-xl border border-rose-300/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-100">
+            {actionError}
+          </p>
+        ) : null}
+        {actionSuccess ? (
+          <p className="mt-3 rounded-xl border border-emerald-300/30 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-100">
+            {actionSuccess}
+          </p>
+        ) : null}
       </article>
 
       <Link

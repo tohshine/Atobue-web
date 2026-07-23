@@ -25,6 +25,8 @@ export {
   usersApi,
   useGetUsersQuery,
   useUpdateUserVerificationMutation,
+  useBanUserMutation,
+  useUnbanUserMutation,
 } from "./users";
 export {
   conflictsApi,

@@ -64,6 +64,8 @@ export type {
   ConflictsResponse,
   ResolveConflictRequest,
   ResolveConflictResponse,
+  BanUserRequest,
+  BanUserResponse,
   UpdateUserVerificationRequest,
   UpdateUserVerificationResponse,
   UpdateVerificationApiResponse,

@@ -35,6 +35,7 @@ export type SystemUserInfo = {
   _id: string;
   createdAt: string;
   currency: string;
+  banned?: boolean;
 };
 
 export type SystemUserCash = {
