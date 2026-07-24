@@ -11,7 +11,7 @@ export default function AdminControlsPage() {
       <AdminShell
         active={adminRoutes.controls}
         title="Controls"
-        subtitle="Manage platform listing options and operational settings"
+        subtitle="Manage listing options shown across the platform"
       >
         <DataCatalogManager />
       </AdminShell>

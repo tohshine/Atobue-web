@@ -48,7 +48,7 @@ function humanize(value: string | null | undefined) {
   }
 
   return value
-    .replace(/_/g, " ")
+    .replace(/[_-]+/g, " ")
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
@@ -108,10 +108,9 @@ function MetricCard({
   };
 
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5">
-      <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/6 blur-3xl" />
-      <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">{label}</p>
-      <p className={`mt-3 text-3xl font-semibold tracking-tight ${toneClasses[tone]}`}>{value}</p>
+    <article className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5">
+      <p className="text-[11px] uppercase tracking-wide text-white/45">{label}</p>
+      <p className={`mt-1.5 text-2xl font-semibold tracking-tight ${toneClasses[tone]}`}>{value}</p>
     </article>
   );
 }
@@ -184,12 +183,12 @@ function RefundQueueCard({
 function RefundDetailSkeleton() {
   return (
     <div className="animate-pulse space-y-4">
-      <div className="h-44 rounded-3xl bg-white/5" />
+      <div className="h-28 rounded-2xl bg-white/5" />
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="h-52 rounded-2xl bg-white/5" />
-        <div className="h-52 rounded-2xl bg-white/5" />
+        <div className="h-44 rounded-2xl bg-white/5" />
+        <div className="h-44 rounded-2xl bg-white/5" />
       </div>
-      <div className="h-72 rounded-2xl bg-white/5" />
+      <div className="h-56 rounded-2xl bg-white/5" />
     </div>
   );
 }
@@ -200,10 +199,9 @@ function RefundDetailPanel({ refund, isRefreshing }: { refund: RefundOrderDetail
 
   return (
     <div className="space-y-4">
-      <article className="relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-white/10 via-white/5 to-transparent p-6">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-(--brand)/15 blur-3xl" />
-        <div className="relative flex flex-wrap items-start justify-between gap-4">
-          <div className="max-w-3xl">
+      <article className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">
                 {refund.id}
@@ -213,19 +211,17 @@ function RefundDetailPanel({ refund, isRefreshing }: { refund: RefundOrderDetail
                 {humanize(refund.type)}
               </span>
             </div>
-            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-white">
-              {formatMoney(refund.amount, currency)} refund order
+            <h2 className="mt-3 text-xl font-semibold tracking-tight text-white">
+              {formatMoney(refund.amount, currency)} refund
             </h2>
-            <p className="mt-3 text-sm leading-7 text-white/70">
-              Review the refund owner, linked vacancy, payment breakdown, and settlement timestamps for this order.
+            <p className="mt-2 text-sm leading-6 text-white/70">
+              Review owner, vacancy, payment breakdown, and settlement timestamps.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-right">
-            <p className="text-[11px] uppercase tracking-wide text-white/45">Refresh State</p>
-            <p className="mt-1 text-sm text-white/70">{isRefreshing ? "Refreshing..." : "Live"}</p>
-            <p className="mt-3 text-[11px] uppercase tracking-wide text-white/45">Created</p>
-            <p className="mt-1 text-sm text-white/90">{formatDateTime(refund.createdAt)}</p>
+          <div className="text-right text-xs text-white/55">
+            <p>{formatDateTime(refund.createdAt)}</p>
+            <p className="mt-1">{isRefreshing ? "Refreshing..." : "Live"}</p>
           </div>
         </div>
       </article>
@@ -377,40 +373,36 @@ export default function AdminRefundsPage() {
     <AdminGuard>
       <AdminShell
         active={adminRoutes.refunds}
-        title="Refund Command Center"
-        subtitle="Review refund orders, inspect payout breakdowns, and drill into each refund case"
+        title="Refunds"
+        subtitle="Review refund orders and inspect payout breakdowns"
       >
-        <div className="space-y-6">
-          <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-white/10 via-white/5 to-transparent p-6 md:p-7">
-            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-(--brand)/15 blur-3xl" />
-            <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-2xl">
-                <p className="text-xs uppercase tracking-[0.28em] text-cyan-200/80">Refund Orders</p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white md:text-4xl">
-                  A polished desk for customer refund operations
-                </h2>
-                <p className="mt-3 text-sm leading-7 text-white/70">
-                  The queue is powered by <code>/admin/orders/refunds</code>, and the active case panel
-                  hydrates from <code>/admin/orders/refunds/:orderId</code>.
-                </p>
-              </div>
+        <div className="space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <ul className="flex flex-wrap items-center gap-2" aria-label="Refund keywords">
+              {["Orders", "Pending", "Cleared", "Payouts"].map((word) => (
+                <li
+                  key={word}
+                  className="pill border border-white/10 bg-white/6 px-3 py-1 text-[11px] tracking-[0.12em] text-white/70 uppercase"
+                >
+                  {word}
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={() => {
+                refetchList();
+                if (selectedId) {
+                  refetchDetail();
+                }
+              }}
+              className="inline-flex items-center justify-center rounded-xl border border-(--brand)/35 bg-(--brand)/10 px-3.5 py-2 text-sm font-medium text-cyan-100 transition hover:bg-(--brand)/20"
+            >
+              {isRefreshingList || isRefreshingDetail ? "Refreshing..." : "Refresh"}
+            </button>
+          </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  refetchList();
-                  if (selectedId) {
-                    refetchDetail();
-                  }
-                }}
-                className="inline-flex items-center justify-center rounded-xl border border-(--brand)/35 bg-(--brand)/10 px-4 py-3 text-sm font-medium text-cyan-100 transition hover:bg-(--brand)/20"
-              >
-                {isRefreshingList || isRefreshingDetail ? "Refreshing..." : "Refresh refunds"}
-              </button>
-            </div>
-          </section>
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <MetricCard label="Total Refunds" value={totalRefunds} tone="cyan" />
             <MetricCard label="Cleared Orders" value={clearedRefunds} tone="emerald" />
             <MetricCard label="Pending Orders" value={pendingRefunds} tone="amber" />

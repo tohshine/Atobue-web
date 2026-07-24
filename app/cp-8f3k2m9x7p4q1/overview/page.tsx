@@ -137,11 +137,10 @@ function MetricCard({
   };
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-white/20 hover:bg-white/[0.07]">
-      <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-(--brand)/10 blur-2xl transition group-hover:bg-(--brand)/20" />
-      <p className="text-[11px] font-medium uppercase tracking-wider text-white/50">{label}</p>
-      <p className={`mt-3 text-2xl font-semibold tracking-tight ${toneClasses[tone]}`}>{value}</p>
-      {sublabel ? <p className="mt-2 text-xs text-white/45">{sublabel}</p> : null}
+    <article className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 transition hover:border-white/20 hover:bg-white/[0.07]">
+      <p className="text-[11px] font-medium uppercase tracking-wide text-white/50">{label}</p>
+      <p className={`mt-1.5 text-2xl font-semibold tracking-tight ${toneClasses[tone]}`}>{value}</p>
+      {sublabel ? <p className="mt-1 text-xs text-white/45">{sublabel}</p> : null}
     </article>
   );
 }
@@ -200,16 +199,17 @@ function ActiveUserRing({ active, total }: { active: number; total: number }) {
 
 function OverviewSkeleton() {
   return (
-    <div className="animate-pulse space-y-8">
-      <div className="h-40 rounded-3xl bg-white/5" />
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="animate-pulse space-y-5">
+      <div className="h-10 rounded-2xl bg-white/5" />
+      <div className="h-24 rounded-2xl bg-white/5" />
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className="h-28 rounded-2xl bg-white/5" />
+          <div key={index} className="h-20 rounded-2xl bg-white/5" />
         ))}
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="h-64 rounded-2xl bg-white/5" />
-        <div className="h-64 rounded-2xl bg-white/5" />
+        <div className="h-52 rounded-2xl bg-white/5" />
+        <div className="h-52 rounded-2xl bg-white/5" />
       </div>
     </div>
   );
@@ -243,13 +243,13 @@ export default function AdminOverviewPage() {
     <AdminGuard>
       <AdminShell
         active={adminRoutes.overview}
-        title="System Overview"
-        subtitle="Live platform health and financial position"
+        title="Overview"
+        subtitle="Platform health and financial position"
       >
         {isLoading ? (
           <OverviewSkeleton />
         ) : isError || !system ? (
-          <div className="rounded-2xl border border-rose-400/20 bg-rose-400/10 p-8 text-center">
+          <div className="rounded-2xl border border-rose-400/20 bg-rose-400/10 p-5 text-center">
             <p className="text-sm font-medium text-rose-100">Unable to load system information.</p>
             <button
               type="button"
@@ -260,46 +260,56 @@ export default function AdminOverviewPage() {
             </button>
           </div>
         ) : (
-          <div className="space-y-8">
-            <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-white/10 via-white/5 to-transparent p-6 md:p-8">
-              <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-(--brand)/15 blur-3xl" />
-              <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                <div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <p className="text-xs font-medium uppercase tracking-widest text-fg-50">Account Balance</p>
-                    <BalanceVisibilityToggle hidden={balanceHidden} onToggle={toggleBalanceVisibility} />
-                  </div>
-                  <p className="mt-2 text-4xl font-semibold tracking-tight text-fg md:text-5xl">
-                    {formatBalance(cash.account_balance, balanceHidden)}
-                  </p>
-                  <p className="mt-3 max-w-md text-sm text-fg-60">
-                    Net position after completed flows, with{" "}
-                    <span className="font-medium text-amber-200">
-                      {formatBalance(cash.pending_refund_exposure, balanceHidden)}
-                    </span>{" "}
-                    in pending refund exposure.
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-3 text-xs text-white/50">
-                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5">
-                    Last updated {formatDateTime(system.updatedAt)}
+          <div className="space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <ul className="flex flex-wrap items-center gap-2" aria-label="Overview keywords">
+                {["Balance", "Cashflow", "Users", "Health"].map((word) => (
+                  <li
+                    key={word}
+                    className="pill border border-white/10 bg-white/6 px-3 py-1 text-[11px] tracking-[0.12em] text-white/70 uppercase"
+                  >
+                    {word}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-white/50">
+                <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
+                  Updated {formatDateTime(system.updatedAt)}
+                </span>
+                {isFetching ? (
+                  <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-cyan-200">
+                    Syncing
                   </span>
-                  {isFetching ? (
-                    <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1.5 text-cyan-200">
-                      Syncing…
-                    </span>
-                  ) : null}
+                ) : null}
+              </div>
+            </div>
+
+            <section className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="text-xs font-medium uppercase tracking-wide text-white/50">Account Balance</p>
+                  <BalanceVisibilityToggle hidden={balanceHidden} onToggle={toggleBalanceVisibility} />
                 </div>
               </div>
+              <p className="mt-2 text-3xl font-semibold tracking-tight text-white md:text-4xl">
+                {formatBalance(cash.account_balance, balanceHidden)}
+              </p>
+              <p className="mt-2 max-w-md text-sm text-white/60">
+                Net position after completed flows, with{" "}
+                <span className="font-medium text-amber-200">
+                  {formatBalance(cash.pending_refund_exposure, balanceHidden)}
+                </span>{" "}
+                in pending refund exposure.
+              </p>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-3">
               <SectionHeader
                 icon={<CashIcon className="h-5 w-5" />}
                 title="Cash Flow"
                 description="Completed movements and net liquidity"
               />
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <MetricCard
                   label="Completed Inflow"
                   value={formatBalance(cash.completed_inflow, balanceHidden)}
@@ -325,34 +335,34 @@ export default function AdminOverviewPage() {
             </section>
 
             <div className="grid gap-4 lg:grid-cols-2">
-              <section className="rounded-2xl border border-white/10 bg-white/3 p-6">
+              <section className="rounded-2xl border border-white/10 bg-white/3 p-5">
                 <SectionHeader
                   icon={<UsersIcon className="h-5 w-5" />}
                   title="User Base"
                   description="Registered accounts and current activity"
                 />
-                <div className="mt-8 grid gap-6 sm:grid-cols-[auto_1fr] sm:items-center">
+                <div className="mt-5 grid gap-5 sm:grid-cols-[auto_1fr] sm:items-center">
                   <ActiveUserRing active={activeUsers} total={totalUsers} />
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                       <p className="text-[11px] uppercase tracking-wide text-white/45">Total Users</p>
-                      <p className="mt-1 text-2xl font-semibold text-white">{totalUsers}</p>
+                      <p className="mt-1 text-xl font-semibold text-white">{totalUsers}</p>
                     </div>
                     <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                       <p className="text-[11px] uppercase tracking-wide text-white/45">Active Users</p>
-                      <p className="mt-1 text-2xl font-semibold text-cyan-200">{activeUsers}</p>
+                      <p className="mt-1 text-xl font-semibold text-cyan-200">{activeUsers}</p>
                       <p className="mt-1 text-xs text-white/45">{activeRatio}% of total base</p>
                     </div>
                     <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                       <p className="text-[11px] uppercase tracking-wide text-white/45">Inactive Users</p>
-                      <p className="mt-1 text-2xl font-semibold text-white/80">{inactiveUsers}</p>
+                      <p className="mt-1 text-xl font-semibold text-white/80">{inactiveUsers}</p>
                       <p className="mt-1 text-xs text-white/45">No recent platform activity</p>
                     </div>
                   </div>
                 </div>
               </section>
 
-              <section className="rounded-2xl border border-white/10 bg-white/3 p-6">
+              <section className="rounded-2xl border border-white/10 bg-white/3 p-5">
                 <SectionHeader
                   icon={
                     <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -365,18 +375,10 @@ export default function AdminOverviewPage() {
                       />
                     </svg>
                   }
-                  title="System Record"
-                  description="Platform snapshot metadata"
+                  title="System Health"
+                  description="Live status and sync timing"
                 />
-                <dl className="mt-8 space-y-4">
-                  <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                    <dt className="text-xs uppercase tracking-wide text-white/45">Record ID</dt>
-                    <dd className="truncate font-mono text-xs text-white/70">{system.id || system._id}</dd>
-                  </div>
-                  <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                    <dt className="text-xs uppercase tracking-wide text-white/45">Document Version</dt>
-                    <dd className="text-sm text-white/80">{system.__v}</dd>
-                  </div>
+                <dl className="mt-5 space-y-3">
                   <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                     <dt className="text-xs uppercase tracking-wide text-white/45">Created</dt>
                     <dd className="text-sm text-white/80">{prettyDate(system.createdAt)}</dd>
@@ -387,14 +389,14 @@ export default function AdminOverviewPage() {
                   </div>
                   <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/5 px-4 py-3">
                     <p className="text-xs font-medium uppercase tracking-wide text-emerald-200/80">Health Signal</p>
-                    <p className="mt-2 text-sm text-fg-70">
+                    <p className="mt-2 text-sm text-white/70">
                       {balanceHidden
                         ? "Financial amounts are hidden."
                         : cash.pending_refund_exposure > 0
                           ? `${formatCurrency(cash.pending_refund_exposure)} in refunds requires monitoring.`
                           : netCashflow >= 0
                             ? "Cash position is stable with no pending refund pressure."
-                            : "Negative net cashflow detected — review recent outflows."}
+                            : "Negative net cashflow detected. Review recent outflows."}
                     </p>
                   </div>
                 </dl>

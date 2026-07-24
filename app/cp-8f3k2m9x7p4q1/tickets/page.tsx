@@ -30,7 +30,7 @@ function humanize(value: string | null | undefined) {
   }
 
   return value
-    .replace(/_/g, " ")
+    .replace(/[_-]+/g, " ")
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
@@ -187,10 +187,9 @@ function MetricCard({
   };
 
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5">
-      <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/6 blur-3xl" />
-      <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">{label}</p>
-      <p className={`mt-3 text-3xl font-semibold tracking-tight ${toneClasses[tone]}`}>{value}</p>
+    <article className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5">
+      <p className="text-[11px] uppercase tracking-wide text-white/45">{label}</p>
+      <p className={`mt-1.5 text-2xl font-semibold tracking-tight ${toneClasses[tone]}`}>{value}</p>
     </article>
   );
 }
@@ -235,8 +234,7 @@ function QueueCard({
         <p className="text-sm text-white/55">Against {ticket.users.against}</p>
       </div>
 
-      <div className="mt-3 flex flex-col items-start gap-2 text-[11px] text-white/45 sm:flex-row sm:items-center sm:justify-between">
-        <span className="break-all">{ticket._id}</span>
+      <div className="mt-3 flex items-center justify-end text-[11px] text-white/45">
         <span>{formatDateTime(ticket.createdAt)}</span>
       </div>
     </button>
@@ -349,9 +347,7 @@ function TicketConversationPanel({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold">Room Conversation</h3>
-          <p className="mt-1 text-xs text-white/55">
-            Messages loaded from <code>/admin/tickets/rooms/:roomId/messages</code>
-          </p>
+          <p className="mt-1 text-xs text-white/55">Messages tied to this ticket room</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs text-white/65">
@@ -364,11 +360,6 @@ function TicketConversationPanel({
             {isRefreshing ? "Refreshing..." : "Live"}
           </span>
         </div>
-      </div>
-
-      <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-        <p className="text-[11px] uppercase tracking-wide text-white/45">Room Id</p>
-        <p className="mt-1 break-all font-mono text-xs text-white/65">{ticket.room_id}</p>
       </div>
 
       {isLoading ? (
@@ -443,34 +434,24 @@ function TicketDetailPanel({
 
   return (
     <div className="space-y-4">
-      <article className="relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-white/10 via-white/5 to-transparent p-6">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-(--brand)/15 blur-3xl" />
-        <div className="relative">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="max-w-3xl">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">
-                  {ticket.ticket_number}
-                </span>
-                <span className={getStatusPill(ticket.status)}>{humanize(ticket.status)}</span>
-                <span className={getPriorityPill(ticket.priority)}>{humanize(ticket.priority)}</span>
-                <span className={getTypePill(ticket.type)}>{humanize(ticket.type)}</span>
-              </div>
-              <h2 className="mt-4 text-2xl font-semibold tracking-tight text-white">{ticket.title}</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/75">{ticket.description}</p>
+      <article className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">
+                {ticket.ticket_number}
+              </span>
+              <span className={getStatusPill(ticket.status)}>{humanize(ticket.status)}</span>
+              <span className={getPriorityPill(ticket.priority)}>{humanize(ticket.priority)}</span>
+              <span className={getTypePill(ticket.type)}>{humanize(ticket.type)}</span>
             </div>
-
-            <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-right">
-              <p className="text-[11px] uppercase tracking-wide text-white/45">Created</p>
-              <p className="mt-1 text-sm text-white/90">{formatDateTime(ticket.createdAt)}</p>
-              <p className="mt-3 text-[11px] uppercase tracking-wide text-white/45">Refresh State</p>
-              <p className="mt-1 text-sm text-white/70">{isRefreshing ? "Refreshing..." : "Live"}</p>
-            </div>
+            <h2 className="mt-3 text-xl font-semibold tracking-tight text-white">{ticket.title}</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/70">{ticket.description}</p>
           </div>
 
-          <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wide text-white/45">Ticket Id</p>
-            <p className="mt-1 break-all font-mono text-xs text-white/55">{ticket._id}</p>
+          <div className="text-right text-xs text-white/55">
+            <p>{formatDateTime(ticket.createdAt)}</p>
+            <p className="mt-1">{isRefreshing ? "Refreshing..." : "Live"}</p>
           </div>
         </div>
       </article>
@@ -480,8 +461,8 @@ function TicketDetailPanel({
           <article className="card-soft rounded-2xl p-5 md:p-6">
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-base font-semibold">Case Overview</h3>
-              <span className="max-w-full break-all rounded-2xl bg-white/10 px-2.5 py-1 text-xs text-white/70">
-                {ticket.room_id || "No room linked"}
+              <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs text-white/70">
+                {ticket.room_id ? "Room linked" : "No room linked"}
               </span>
             </div>
             <div className="mt-4">
@@ -752,46 +733,41 @@ export default function AdminTicketsPage() {
     <AdminGuard>
       <AdminShell
         active={adminRoutes.tickets}
-        title="Support Ticket Desk"
-        subtitle="Monitor active cases, inspect full ticket context, and review linked property and payment records"
+        title="Tickets"
+        subtitle="Triage cases and review linked property and payment context"
       >
-        <div className="space-y-6">
-          <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-white/10 via-white/5 to-transparent p-6 md:p-7">
-            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-(--brand)/15 blur-3xl" />
-            <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-2xl">
-                <p className="text-xs uppercase tracking-[0.28em] text-cyan-200/80">Admin Tickets</p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white md:text-4xl">
-                  A cleaner queue for customer support escalations
-                </h2>
-                <p className="mt-3 text-sm leading-7 text-white/70">
-                  The left rail pulls from <code>/admin/tickets</code>, while the active case panel hydrates
-                  from <code>/admin/tickets/:ticketId</code> so admins can move from triage into full case
-                  context without leaving the page.
-                </p>
-              </div>
+        <div className="space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <ul className="flex flex-wrap items-center gap-2" aria-label="Ticket keywords">
+              {["Queue", "Cases", "Priority", "Rooms"].map((word) => (
+                <li
+                  key={word}
+                  className="pill border border-white/10 bg-white/6 px-3 py-1 text-[11px] tracking-[0.12em] text-white/70 uppercase"
+                >
+                  {word}
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={() => {
+                refetchList();
+                if (selectedId) {
+                  refetchDetail();
+                }
+                if (selectedRoomId) {
+                  refetchRoomMessages();
+                }
+              }}
+              className="inline-flex items-center justify-center rounded-xl border border-(--brand)/35 bg-(--brand)/10 px-3.5 py-2 text-sm font-medium text-cyan-100 transition hover:bg-(--brand)/20"
+            >
+              {isRefreshingList || isRefreshingDetail || isRefreshingRoomMessages
+                ? "Refreshing..."
+                : "Refresh"}
+            </button>
+          </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  refetchList();
-                  if (selectedId) {
-                    refetchDetail();
-                  }
-                  if (selectedRoomId) {
-                    refetchRoomMessages();
-                  }
-                }}
-                className="inline-flex items-center justify-center rounded-xl border border-(--brand)/35 bg-(--brand)/10 px-4 py-3 text-sm font-medium text-cyan-100 transition hover:bg-(--brand)/20"
-              >
-                {isRefreshingList || isRefreshingDetail || isRefreshingRoomMessages
-                  ? "Refreshing..."
-                  : "Refresh tickets"}
-              </button>
-            </div>
-          </section>
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <MetricCard label="Total Tickets" value={totalTickets} tone="cyan" />
             <MetricCard label="Open Cases" value={openTickets} tone="amber" />
             <MetricCard label="High Priority" value={highPriorityTickets} tone="rose" />

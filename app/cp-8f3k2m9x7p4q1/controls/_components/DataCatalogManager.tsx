@@ -48,14 +48,14 @@ const TABS: CatalogTab[] = [
   {
     id: "amenities",
     label: "Amenities",
-    description: "In-unit amenities available on property forms.",
+    description: "In unit amenities available on property forms.",
     kind: "booleans",
   },
 ];
 
 function formatLabel(value: string) {
   return value
-    .split(/[,_\s]+/)
+    .split(/[-,_/\s]+/)
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
@@ -495,30 +495,34 @@ export default function DataCatalogManager() {
     loadedTabs.has(section) ? counts[section] : "—";
 
   return (
-    <section className="card-soft overflow-hidden rounded-3xl">
-      <div className="border-b border-white/10 bg-linear-to-r from-(--brand)/10 via-transparent to-violet-400/10 px-5 py-6 md:px-7">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-(--brand)">Platform Catalog</p>
-            <h2 className="mt-2 text-2xl font-semibold text-white">Listing Data Controls</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/65">
-              Manage the options tenants and landlords see when creating or browsing listings. Changes apply
-              platform-wide immediately.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-            {TABS.map((tab) => (
-              <div key={tab.id} className="rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-center">
-                <p className="text-[10px] uppercase tracking-wide text-white/45">{tab.label.split(" ")[0]}</p>
-                <p className="mt-1 text-lg font-semibold text-white">{showCount(tab.id)}</p>
-              </div>
-            ))}
-          </div>
+    <section className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <ul className="flex flex-wrap items-center gap-2" aria-label="Controls keywords">
+          {["Categories", "Durations", "Features", "Services", "Amenities"].map((word) => (
+            <li
+              key={word}
+              className="pill border border-white/10 bg-white/6 px-3 py-1 text-[11px] tracking-[0.12em] text-white/70 uppercase"
+            >
+              {word}
+            </li>
+          ))}
+        </ul>
+        <div className="flex flex-wrap gap-2">
+          {TABS.map((tab) => (
+            <div
+              key={tab.id}
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-center"
+            >
+              <span className="text-[10px] uppercase tracking-wide text-white/45">{tab.label.split(" ")[0]}</span>
+              <span className="ml-1.5 text-sm font-semibold text-white">{showCount(tab.id)}</span>
+            </div>
+          ))}
         </div>
       </div>
 
+      <div className="card-soft overflow-hidden rounded-2xl">
       {activeQuery.isError ? (
-        <div className="border-b border-rose-400/20 bg-rose-400/10 px-5 py-3 text-sm text-rose-100 md:px-7">
+        <div className="border-b border-rose-400/20 bg-rose-400/10 px-5 py-3 text-sm text-rose-100">
           Could not load {activeTabMeta.label.toLowerCase()}. Use retry below or switch tabs and come back.
         </div>
       ) : null}
@@ -526,7 +530,7 @@ export default function DataCatalogManager() {
       {feedback ? (
         <div
           className={[
-            "border-b px-5 py-3 text-sm md:px-7",
+            "border-b px-5 py-3 text-sm",
             feedback.tone === "success"
               ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-100"
               : "border-rose-400/20 bg-rose-400/10 text-rose-100",
@@ -536,8 +540,8 @@ export default function DataCatalogManager() {
         </div>
       ) : null}
 
-      <div className="grid lg:grid-cols-[240px_minmax(0,1fr)]">
-        <nav className="border-b border-white/10 p-3 lg:border-r lg:border-b-0 lg:p-4">
+      <div className="grid lg:grid-cols-[220px_minmax(0,1fr)]">
+        <nav className="border-b border-white/10 p-3 lg:border-r lg:border-b-0">
           <ul className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
             {TABS.map((tab) => {
               const active = tab.id === activeTab;
@@ -547,14 +551,14 @@ export default function DataCatalogManager() {
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
                     className={[
-                      "w-full rounded-2xl px-4 py-3 text-left transition",
+                      "w-full rounded-xl px-3.5 py-2.5 text-left transition",
                       active
                         ? "bg-(--brand)/15 text-white ring-1 ring-(--brand)/30"
                         : "text-white/65 hover:bg-white/5 hover:text-white/90",
                     ].join(" ")}
                   >
                     <p className="text-sm font-medium">{tab.label}</p>
-                    <p className="mt-1 text-[11px] text-white/45">{showCount(tab.id)} entries</p>
+                    <p className="mt-0.5 text-[11px] text-white/45">{showCount(tab.id)} entries</p>
                   </button>
                 </li>
               );
@@ -562,9 +566,9 @@ export default function DataCatalogManager() {
           </ul>
         </nav>
 
-        <div className="p-5 md:p-7">
-          <div className="mb-5">
-            <h3 className="text-lg font-semibold text-white/95">{activeTabMeta.label}</h3>
+        <div className="p-4 md:p-5">
+          <div className="mb-4">
+            <h3 className="text-base font-semibold text-white/95">{activeTabMeta.label}</h3>
             <p className="mt-1 text-sm text-white/60">{activeTabMeta.description}</p>
           </div>
 
@@ -628,6 +632,7 @@ export default function DataCatalogManager() {
             />
           ) : null}
         </div>
+      </div>
       </div>
 
       <ConfirmDeleteModal

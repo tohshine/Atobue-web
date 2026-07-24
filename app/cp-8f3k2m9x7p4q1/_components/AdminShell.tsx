@@ -26,36 +26,38 @@ export default function AdminShell({
   subtitle: string;
 }) {
   return (
-    <main className="min-h-screen bg-[linear-gradient(170deg,#040a14_0%,#0c1830_45%,#091328_100%)] pb-10">
+    <main className="min-h-screen bg-[linear-gradient(170deg,#040a14_0%,#0c1830_45%,#091328_100%)] pb-8">
       <header className="sticky top-0 z-40 border-b border-white/10 bg-black/45 backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-3 px-5 py-4">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-white/60">Xelfon Admin</p>
-            <h1 className="text-xl font-semibold md:text-2xl">{title}</h1>
-            <p className="text-xs text-white/60">{subtitle}</p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <nav className="flex flex-wrap items-center gap-1 rounded-3xl border border-white/10 bg-white/5 p-1">
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={[
-                    "rounded-full px-3 py-1.5 text-xs font-medium uppercase tracking-wide transition md:px-4",
-                    active === item.href ? "bg-(--brand) text-slate-900" : "text-white/70 hover:bg-white/10",
-                  ].join(" ")}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+        <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-3 px-5 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-(--brand)">Xelfcon Admin</p>
+              <h1 className="truncate text-lg font-semibold leading-tight md:text-xl">{title}</h1>
+              <p className="truncate text-xs text-white/55">{subtitle}</p>
+            </div>
             <SignOutButton />
           </div>
+
+          <nav className="flex gap-1.5 overflow-x-auto pb-0.5">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={[
+                  "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium tracking-wide transition",
+                  active === item.href
+                    ? "bg-(--brand) text-slate-900"
+                    : "border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white",
+                ].join(" ")}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </header>
 
-      <section className="mx-auto mt-6 w-full max-w-[1440px] px-5">{children}</section>
+      <section className="mx-auto mt-5 w-full max-w-[1440px] px-5">{children}</section>
     </main>
   );
 }
